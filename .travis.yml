@@ -5,3 +5,5 @@ notifications:
       - iamfeysal@gmail.com
     on_success: always # default: change
     on_failure: always # default: always
+
+script: pytest
