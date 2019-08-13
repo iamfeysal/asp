@@ -1,0 +1,88 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+Pipfile
+Pipfile.lock
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+
+# dist/ # commented since plugins require this
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info
+.installed.cfg
+*.egg
+.DS_Store
+*.sqlite3
+
+
+# Tests / Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache/
+coverage.*
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+
+# Environment variables
+.env
+
+
+# IDE files
+.idea/*
+.vscode
+
+# Images
+assets/media/*
+media/*
+
+
+# Static files
+static/*
+
+
+# Emacs temp files
+\#*\#
+.\#*
+
+
+# Log files
+log/*
+*.logs
+*.log
+
+
+# Django temp files
+tempfiles/
+
+# Ignore Migrations (Disabled on production only)
+
+*/migrations/*.py
+*/migrations/*.pyc
+*/*/migrations/*.py
+*/*/migrations/*.pyc
+*/*/*/migrations/*.py
+*/*/*/migrations/*.pyc
+
+# Django/IntelliJ intergration
+Django/
+sokoEnv/
+devEnv/
+venv/
