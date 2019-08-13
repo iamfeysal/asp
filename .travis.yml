@@ -12,5 +12,4 @@ script:
  - python manage.py migrate
  - python manage.py test
 
-
-CODECOV_TOKEN="2b7287a3-2370-43b9-8b9c-7d7ff0f04f06"
+codecov --token ="2b7287a3-2370-43b9-8b9c-7d7ff0f04f06"
