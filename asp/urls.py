@@ -14,9 +14,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
+
+from core.views import signup, HomeView, activate, account_activation_sent
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path(r'^signup', core_views.signup, name='signup'),
+    path(r'', HomeView.as_view(), name='home'),
+    path(r'register', signup, name='sign-up'),
+    re_path(r'^account_activation_sent/$', account_activation_sent,
+        name='account_activation_sent'),
+    re_path(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/'
+            r'(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+            activate, name='activate'),
 ]
