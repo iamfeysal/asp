@@ -36,7 +36,7 @@ def signup(request) :
             user.save()
             current_site = get_current_site(request)
             print(current_site)
-            subject = 'Activate Your MySite Account'
+            subject = 'Activate Your  Account'
             print(subject)
             sender_email = form.cleaned_data['email']
             from_email = settings.EMAIL_HOST_USER
@@ -49,7 +49,6 @@ def signup(request) :
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': account_activation_token.make_token(user),
             })
-            # print(message)
             send_mail(
                     subject,
                     message,
