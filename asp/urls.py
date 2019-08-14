@@ -16,7 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path
 
-from core.views import signup, HomeView, activate, account_activation_sent
+from core.views import signup, HomeView, activate, account_activation_sent,\
+    logout_request,login_request
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,4 +28,7 @@ urlpatterns = [
     re_path(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/'
             r'(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
             activate, name='activate'),
+    path("logout", logout_request, name="logout"),
+    path("login", login_request, name="login"),
+
 ]
