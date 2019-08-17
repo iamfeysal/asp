@@ -18,11 +18,10 @@ class HomePageView(TemplateView) :
 
 def SignUp(request) :
     print('hit function')
-    if request.POST:
+    if request.method == 'POST':
         print('hit post function')
         form = RegistrationForm(request.POST)
-        print(form)
-        if form.is_valid() :
+        if form.is_valid():
             form.save()
             email = form.cleaned_data.get('email')
             print(email)
@@ -32,7 +31,8 @@ def SignUp(request) :
             print(users)
             login(request, users)
             return redirect('home')
-        else :  # get request
+        else:
+            messages.error(request, "Error")
             form = RegistrationForm()
     else :
         form = RegistrationForm()
@@ -54,7 +54,8 @@ def login_view(request) :
             if user :
                 login(request, user)
                 return redirect("home")
-
+        else: # get form
+            form=AccountAuthenticationForm()
     else :
         form = AccountAuthenticationForm()
     # print(form)

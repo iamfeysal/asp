@@ -1,3 +1,6 @@
+from crispy_forms.bootstrap import StrictButton
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit, Layout
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
@@ -27,6 +30,26 @@ class AccountAuthenticationForm(forms.ModelForm):
             password = self.cleaned_data['password']
             if not authenticate(email=email, password=password) :
                 raise forms.ValidationError("Invalid login")
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.helper = FormHelper()
+    #     self.helper.form_method = 'post'
+    #     self.helper.add_input(Submit('submit', 'Log In'))
+    #
+    # def __init__(self, *args, **kwargs) :
+    #     super(AccountAuthenticationForm, self).__init__(*args, **kwargs)
+    #
+    #     self.helper = FormHelper()
+    #     self.helper.form_class = 'form-horizontal'
+    #     self.helper.label_class = 'col-lg-2'
+    #     self.helper.field_class = 'col-lg-8'
+    #     self.helper.layout = Layout(
+    #         'email',
+    #         'password',
+    #         StrictButton('Sign in', css_class='btn-default'),
+    #
+    #     )
 
 
 class AccountUpdateForm(forms.ModelForm) :

@@ -1,51 +1,331 @@
 {% extends 'base.html' %}
-{#{% block content %}#}
-{#  <h2>Sign up</h2>#}
-{#  <form method="post">#}
-{#    {% csrf_token %}#}
-{#    {% for field in form %}#}
-{#      <p>#}
-{#        {{ field.label_tag }}<br>#}
-{#        {{ field }}#}
-{#        {% if field.help_text %}#}
-{#          <small style="color: grey">{{ field.help_text }}</small>#}
-{#        {% endif %}#}
-{#        {% for error in field.errors %}#}
-{#          <p style="color: red">{{ error }}</p>#}
-{#        {% endfor %}#}
-{#      </p>#}
-{#    {% endfor %}#}
-{#    <button type="submit">Sign up</button>#}
-{#  </form>#}
-{#{% endblock %}#}
-
-
-{% load i18n %}
-{% load crispy_forms_tags %}
-
-{% block head_title %}{% trans "Signup" %}{% endblock %}
-{% block navbar %}
-{% endblock navbar %}
+{% load static %}
 
 {% block content %}
-  <main>
-    <div class="container">
-      <section class="mb-4">
-        <div class="row wow fadeIn">
-          <div class='col-6 offset-3'>
-            <h1>{% trans "Sign Up" %}</h1>
-            <p>{% blocktrans %}Already have an account? Then please <a href="/login">sign in</a>.{% endblocktrans %}</p>
-            <form class="signup" id="signup_form" method="post" action="{% url 'signup' %}">
-              {% csrf_token %}
-              {{ form|crispy }}
-              {% if redirect_field_value %}
-              <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-              {% endif %}
-              <button class='btn btn-primary' type="submit">{% trans "Sign Up" %} &raquo;</button>
-            </form>
-          </div>
-        </div>
-      </section>
+
+
+<style type="text/css">
+  .form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+  }
+  .form-signin .form-control {
+    position: relative;
+    box-sizing: border-box;
+    height: auto;
+    padding: 10px;
+    font-size: 16px;
+  }
+  .form-signin .form-control:focus {
+    z-index: 2;
+  }
+  .form-signin input[type="email"] {
+    margin-bottom: 10px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .form-signin input[type="text"] {
+    margin-bottom: 10px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .form-signin input[type="password"] {
+    margin-bottom: -1px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+  .h3{
+    text-align: center;
+  }
+</style>
+
+
+<form class="form-signin" method="post">{% csrf_token %}
+  <div class="d-flex flex-column pb-3">
+    <img class="img-fluid mx-auto d-block" src="https://about.canva.com/wp-content/uploads/sites/3/2016/08/logos-1.png" alt=" logo image" width="72" height="72">
+  </div>
+  <h1 class="h3 mb-3 font-weight-normal">Register an account</h1>
+
+  <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+
+  <input type="text" name="username" id="inputUsername" class="form-control" placeholder="Username" required>
+
+  <input type="password" name="password1" id="inputPassword1" class="form-control" placeholder="Password" required>
+
+  <input type="password" name="password2" id="inputPassword2" class="form-control" placeholder="Confirm password" required>
+
+  {% for field in form %}
+      <p>
+        {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+        {% endfor %}
+      </p>
+  {% endfor %}
+  {% if form.non_field_errors %}
+    <div style="color: red">
+      <p>{{form.non_field_errors}}</p>
     </div>
-  </main>
-{% endblock %}
+
+  {% endif %}
+
+    {% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+
+  <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+
+</form>
+
+
+{% endblock content %}
+
+
+
+{##}
+{#<html>#}
+{##}
+{#<head>#}
+{#    <!-- Latest compiled and minified CSS -->#}
+{#<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">#}
+{##}
+{#<!-- jQuery library -->#}
+{#<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>#}
+{##}
+{#<!-- Latest compiled JavaScript -->#}
+{#<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>#}
+{#</head>#}
+{#<body>#}
+{#<div id="dark"></div>#}
+{#<div id="Register">#}
+{#<div class="form-class" >#}
+{#  <button  id="button-x1"><div id="x-icon"></div></button>#}
+{#  <h2>Register</h2>#}
+{#  <form class="form-signin" method="post">{% csrf_token %}#}
+{#      <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>#}
+{##}
+{#  <input type="text" name="username" id="inputUsername" class="form-control" placeholder="Username" required>#}
+{##}
+{#  <input type="password" name="password1" id="inputPassword1" class="form-control" placeholder="Password" required>#}
+{##}
+{#  <input type="password" name="password2" id="inputPassword2" class="form-control" placeholder="Confirm password" required>#}
+{#        <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>#}
+{##}
+{##}
+{#    <input type="text"><br>Email<br>#}
+{#    <input type="text"><br>Username<br>#}
+{#    <input type="text"><br>Password<br>#}
+{#    <input type="text"><br>Repeat Password<br>#}
+{#    <input type="text"><br>I agree to the Terms and Conditions#}
+{#    <input type="checkbox"><br>#}
+{#    <input type="submit" value="Register">#}
+{##}
+{#  </form></div></div>#}
+{#<div id="Login">#}
+{#<div class="form-class" >#}
+{#  <button id="button-x2"><div id="x-icon"></div></button>#}
+{#  <h2>Login</h2>#}
+{#  <form>#}
+{#    Email<br>#}
+{#    <input type="text"><br>Password<br>#}
+{#    <input type="text"><br>#}
+{#    <input type="submit" value="Login">#}
+{##}
+{#  </form>#}
+{#</div></div>#}
+{##}
+{#<nav class="buttons">#}
+{#  <button id="reg-button">Register</button>#}
+{#  <button id="log-button">Login</button>#}
+{#</nav>#}
+{#</body>#}
+{##}
+{#<style>#}
+{#@import url("https://fonts.googleapis.com/css?family=Comfortaa");#}
+{#html {#}
+{#  height: 100%;#}
+{#}#}
+{##}
+{#body {#}
+{#  margin: 0;#}
+{#  width: 100%;#}
+{#  position: relative;#}
+{#  font-family: 'Comfortaa', cursive;#}
+{#  height: 100%;#}
+{#  background-image: url("https://images.unsplash.com/photo-1487252015168-776961549aca?ixlib=rb-0.3.5&q=85&fm=jpg&crop=entropy&cs=srgb&ixid=eyJhcHBfaWQiOjE0NTg5fQ%3D%3D%0A&s=a925866e036c311d06bcedd37fb1717d");#}
+{#  background-size: cover;#}
+{#  background-position: 50%;#}
+{#}#}
+{##}
+{##dark {#}
+{#  position: absolute;#}
+{#  width: 100%;#}
+{#  height: 100%;#}
+{#  top: 0;#}
+{#  left: 0;#}
+{#  background-color: rgba(0, 0, 0, 0.5);#}
+{#  display: none;#}
+{#}#}
+{##}
+{##button-x1, #button-x2 {#}
+{#  background-color: blanchedalmond;#}
+{#  position: absolute;#}
+{#  top: 0;#}
+{#  right: 0;#}
+{#  outline: none;#}
+{#  border: none;#}
+{#  border-top-right-radius: 0.5em;#}
+{#  cursor: pointer;#}
+{#}#}
+{##button-x1 #x-icon, #button-x2 #x-icon {#}
+{#  height: 20px;#}
+{#  width: 20px;#}
+{#  position: relative;#}
+{#}#}
+{##button-x1 #x-icon:before, #button-x1 #x-icon:after, #button-x2 #x-icon:before, #button-x2 #x-icon:after {#}
+{#  content: '';#}
+{#  position: absolute;#}
+{#  height: 0.3em;#}
+{#  width: 100%;#}
+{#  top: 50%;#}
+{#  left: 0;#}
+{#  transition: all 0.1s linear;#}
+{#  background: #005858;#}
+{#}#}
+{##button-x1 #x-icon:before, #button-x2 #x-icon:before {#}
+{#  transform: rotate(45deg);#}
+{#}#}
+{##button-x1 #x-icon:after, #button-x2 #x-icon:after {#}
+{#  transform: rotate(-45deg);#}
+{#}#}
+{##button-x1 #x-icon:hover:before, #button-x1 #x-icon:hover:after, #button-x2 #x-icon:hover:before, #button-x2 #x-icon:hover:after {#}
+{#  background-color: darkcyan;#}
+{#}#}
+{##}
+{#.form-class {#}
+{#  position: relative;#}
+{#  padding: 1em;#}
+{#  display: block;#}
+{#  background-color: blanchedalmond;#}
+{#  width: 25em;#}
+{#  text-align: center;#}
+{#  box-sizing: border-box;#}
+{#  border-radius: 0.5em;#}
+{#  margin: 0 auto;#}
+{#  color: #005858;#}
+{#}#}
+{#.form-class h2 {#}
+{#  margin: 0;#}
+{#  padding-bottom: 1em;#}
+{#}#}
+{#.form-class form {#}
+{#  font-size: 1em;#}
+{#  margin: 0 auto;#}
+{#  display: inline-block;#}
+{#  text-align: left;#}
+{#}#}
+{#.form-class form input {#}
+{#  font-size: 1em;#}
+{#  margin-bottom: 1em;#}
+{#  font-family: 'Comfortaa', cursive;#}
+{#  outline-color: #005858;#}
+{#  box-sizing: border-box;#}
+{#}#}
+{#.form-class form input[type^=text] {#}
+{#  width: 100%;#}
+{#  border-radius: 3px;#}
+{#  border: none;#}
+{#  padding: 0.4em;#}
+{#}#}
+{#.form-class form input[type^=checkbox] {#}
+{#  cursor: pointer;#}
+{#}#}
+{#.form-class form input[type^=submit] {#}
+{#  float: right;#}
+{#  margin-top: 1em;#}
+{#  background-color: #005858;#}
+{#  border: none;#}
+{#  padding: 0.7em;#}
+{#  color: blanchedalmond;#}
+{#  transition: all 0.1s linear;#}
+{#  cursor: pointer;#}
+{#}#}
+{#.form-class form input[type^=submit]:hover {#}
+{#  background-color: darkcyan;#}
+{#}#}
+{##}
+{##Register, #Login {#}
+{#  position: absolute;#}
+{#  margin-top: 5em;#}
+{#  left: 0;#}
+{#  right: 0;#}
+{#  display: none;#}
+{#}#}
+{##}
+{#.buttons {#}
+{#  display: flex;#}
+{#  width: 100%;#}
+{#  justify-content: center;#}
+{#  padding-bottom: 0.05em;#}
+{#  background-color: rgba(0, 88, 88, 0.6);#}
+{#  border-bottom: 0.3em solid #ffae34;#}
+{#}#}
+{#.buttons button {#}
+{#  box-sizing: border-box;#}
+{#  width: 8em;#}
+{#  padding: 1em;#}
+{#  font-size: 1.3em;#}
+{#  font-family: 'Comfortaa', cursive;#}
+{#  background-color: transparent;#}
+{#  border: none;#}
+{#  color: blanchedalmond;#}
+{#  outline: none;#}
+{#  cursor: pointer;#}
+{#  transition: all 0.1s linear;#}
+{#}#}
+{#.buttons button:hover {#}
+{#  background-color: rgba(0, 88, 88, 0.8);#}
+{#}#}
+{##}
+{#</style>#}
+{##}
+{#<script>#}
+{#    $("#reg-button").click(function() {#}
+{#  $("#dark").css({"display":"block"});#}
+{#  $("#Register").slideDown(400).css({"display":"block"});#}
+{##}
+{#});#}
+{##}
+{#$("#button-x1").click(function() {#}
+{#  $("#Register").slideUp(200);#}
+{#  $("#dark").css({"display":"none"});#}
+{#});#}
+{##}
+{#$("#log-button").click(function() {#}
+{#  $("#dark").css({"display":"block"});#}
+{#  $("#Login").slideDown(400).css({"display":"block"});#}
+{##}
+{#});#}
+{##}
+{#$("#button-x2").click(function() {#}
+{#  $("#Login").slideUp(200);#}
+{#  $("#dark").css({"display":"none"});#}
+{#});#}
+{##}
+{##}
+{#</script>#}
+{#</body>#}
+{##}
+{#</html>#}

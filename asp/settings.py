@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'core.apps.CoreConfig',
     'users.apps.UsersConfig',
+    'bootstrap3',
+    'bootstrap4',
 ]
 
 AUTH_USER_MODEL = 'users.User'
@@ -117,9 +119,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    # },
 ]
 
 
