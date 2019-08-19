@@ -21,9 +21,9 @@
 #             print(email)
 #             raw_password = form.cleaned_data.get('password1')
 #             print(raw_password)
-#             users = authenticate(email=email, password=raw_password)
-#             print(users)
-#             login(request, users)
+#             authentication = authenticate(email=email, password=raw_password)
+#             print(authentication)
+#             login(request, authentication)
 #             return redirect('home')
 #         else:
 #             messages.error(request, "Error")

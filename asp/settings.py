@@ -41,19 +41,22 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'users.apps.UsersConfig',
+    'django_filters',
+    'authentication.apps.UsersConfig',
 
 
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES':(
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
+        # 'authentication.permissions.SuPermission',
+
     )
 }
 
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'authentication.User'
 
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
