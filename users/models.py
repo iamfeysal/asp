@@ -1,5 +1,9 @@
+import jwt
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.conf import settings
+from datetime import datetime, timedelta
+
 
 from users.managers import MyAccountManager
 
@@ -22,6 +26,16 @@ class User(AbstractBaseUser) :
 
     def __str__(self) :
         return self.email
+
+    @property
+    def token(self) :
+        dt = datetime.now() + timedelta(days=60)
+        token = jwt.encode({
+            'id' : self.pk,
+            'exp' : int(dt.strftime('%s'))
+        }, settings.SECRET_KEY, algorithm='HS256')
+        return token.decode('utf-8')
+
 
     # For checking permissions. to keep it simple all admin have ALL permissons
     def has_perm(self, perm, obj=None) :

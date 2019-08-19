@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-
+import datetime
 import os
 from  decouple import config, Csv
 import dj_database_url
@@ -39,12 +39,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'crispy_forms',
-    'core.apps.CoreConfig',
+    'rest_framework',
+    'rest_framework.authtoken',
     'users.apps.UsersConfig',
-    'bootstrap3',
-    'bootstrap4',
+
+
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES':(
+        'rest_framework.permissions.IsAuthenticated',
+    )
+}
+
 
 AUTH_USER_MODEL = 'users.User'
 
