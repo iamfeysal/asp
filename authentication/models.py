@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.conf import settings
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from authentication.messages import send_mail
@@ -63,6 +63,14 @@ class User(AbstractBaseUser) :
         return send_mail(
             subject, message, [self.email], from_email=from_email, **kwargs)
 
+    def pre_save_listener(sender, instance, *args, **kwargs) :
+        if instance.is_player:
+            instance.is_coach = False
+        if instance.is_coach :
+            instance.is_player = False
+
+    pre_save.connect(receiver=pre_save_listener, sender=AUTH_USER_MODEL)
+
 
 class UserProfile(models.Model) :
     MARITAL_STATUS_CHOICES = (
@@ -70,6 +78,7 @@ class UserProfile(models.Model) :
         ('f', 'Engaged'),
         ('pns', 'Prefer not to say'),
     )
+    
     PREFERED_PLAY_FOOT = (
         ('r', 'Right'),
         ('l', 'Left'),
@@ -78,20 +87,25 @@ class UserProfile(models.Model) :
 
     user = models.OneToOneField(AUTH_USER_MODEL, null=True,
                                 on_delete=models.CASCADE)
+    image = models.ImageField(default='default.jpg', upload_to='profiles')
     birth_date = models.DateField(null=True)
     foot_choice = models.CharField(max_length=1, choices=PREFERED_PLAY_FOOT,
                                    null=True)
     nationality = CountryField()
     marital_status = models.CharField(max_length=1,
                                       choices=MARITAL_STATUS_CHOICES, null=True)
+    
+    
 
+    # @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+    # def create_user_profile(sender, instance, created, **kwargs) :
+    #     if created :
+    #         UserProfile.objects.create(user=instance)
+    #     instance.profile.save()
+    # 
+    # @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+    # def save_user_profile(sender, instance, **kwargs) :
+    #     instance.profile.save()
 
-@receiver(post_save, sender=User)
-def create_or_update_user_profile(sender, instance, created, **kwargs) :
-    if created :
-        UserProfile.objects.create(user=instance)
-    instance.profile.save()
-
-    @property
-    def age(self) :
+    def age(self):
         return int((datetime.now().date() - self.birth_date).days / 365.25)

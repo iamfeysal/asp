@@ -6,37 +6,72 @@ from rest_framework.authtoken.models import Token
 
 from authentication.auth_backends import AuthenticationBackend
 from django.utils.translation import ugettext_lazy as _
-from authentication.models import User
+from authentication.models import User, UserProfile
+
+
+class UserProfileSerializer(serializers.ModelSerializer) :
+    foot_choice = serializers.CharField(source='get_nationality_display')
+    nationality = serializers.CharField(source='get_foot_choice_display')
+    marital_status = serializers.CharField(source='get_marital_status_display')
+    print("hit user serializer")
+
+    class Meta :
+        model = UserProfile
+        fields = (
+             "birth_date", "foot_choice", "nationality",
+            "marital_status", "age")
 
 
 class UserSerializer(serializers.ModelSerializer) :
     print("hit user serializer")
+    userprofile = UserProfileSerializer(read_only=True)
+
 
     class Meta :
         model = User
         fields = (
-        "id", "email", "password", "date_joined", "last_login")
+            "id", "email", "password", "date_joined", "last_login", "userprofile")
 
-        read_only_fields = ('date_joined', 'last_login',)
+        # read_only_fields = ('date_joined', "password", 'last_login', 'userprofile')
+        extra_kwargs = {'password': {'write_only': True, 'required':True},}
 
-        def create(self, validated_data) :
+
+        def create(self, validated_data):
             """ Create user using given validated fields """
-            return User.objects.create(**validated_data)
+            # profile_data = validated_data.pop('profile')
+            # password = validated_data.pop('password')
+            # user = User(**validated_data)
+            # user.set_password(password)
+            # user.save()
+            user = User.objects.create_user(**validated_data)
+            print('user is:',user)
+            return user
 
         def update(self, instance, validated_data) :
             """ Update user details """
-            instance.email = validated_data.get(
-                'email', instance.email)
-            instance.save()
-            email = validated_data.get('email', None)
-            password = validated_data.get('password', None)
-            confirm_password = validated_data.get('confirm_password', None)
+            profile_data = validated_data.pop('profile')
+            profile = instance.profile
 
-            if password and confirm_password and password == confirm_password :
-                instance.set_password(password)
-                instance.save()
-            update_session_auth_hash(self.context.get('request'), instance)
-            return instance
+            instance.email = validated_data.get('email', instance.email)
+            instance.save()
+            profile.birth_date = profile_data.get('birth_date', profile.birth_date)
+            profile.foot_choice = profile_data.get('foot_choice', profile.foot_choice)
+            profile.nationality = profile_data.get('nationality', profile.nationality)
+            profile.marital_status = profile_data.get('marital_status', profile.marital_status)
+            profile.age = profile_data.get('age', profile.age)
+            return profile
+            # instance.email = validated_data.get(
+            #     'email', instance.email)
+            # instance.save()
+            # email = validated_data.get('email', None)
+            # password = validated_data.get('password', None)
+            # confirm_password = validated_data.get('confirm_password', None)
+            # 
+            # if password and confirm_password and password == confirm_password :
+            #     instance.set_password(password)
+            #     instance.save()
+            # update_session_auth_hash(self.context.get('request'), instance)
+            # return instance
 
 
 class LoginSerializer(serializers.Serializer) :
@@ -51,7 +86,7 @@ class LoginSerializer(serializers.Serializer) :
     def update(self, instance, validated_data) :
         pass
 
-    def validate(self, attrs):
+    def validate(self, attrs) :
         email = attrs.get('email')
         password = attrs.get('password')
 
