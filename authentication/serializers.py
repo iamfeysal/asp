@@ -15,7 +15,7 @@ class UserSerializer(serializers.ModelSerializer) :
     class Meta :
         model = User
         fields = (
-        "id", "email", "username", "password", "date_joined", "last_login")
+        "id", "email", "password", "date_joined", "last_login")
 
         read_only_fields = ('date_joined', 'last_login',)
 
@@ -25,12 +25,10 @@ class UserSerializer(serializers.ModelSerializer) :
 
         def update(self, instance, validated_data) :
             """ Update user details """
-            instance.username = validated_data.get(
-                'username', instance.username)
             instance.email = validated_data.get(
                 'email', instance.email)
             instance.save()
-
+            email = validated_data.get('email', None)
             password = validated_data.get('password', None)
             confirm_password = validated_data.get('confirm_password', None)
 
@@ -43,7 +41,7 @@ class UserSerializer(serializers.ModelSerializer) :
 
 class LoginSerializer(serializers.Serializer) :
     """ Logs in existing users """
-    username = serializers.CharField(required=True, allow_blank=False)
+    email = serializers.EmailField(required=True, allow_blank=False)
     password = serializers.CharField(
         style={'input_type' : 'password'}, required=True)
 
@@ -53,14 +51,14 @@ class LoginSerializer(serializers.Serializer) :
     def update(self, instance, validated_data) :
         pass
 
-    def validate(self, attrs) :
-        username = attrs.get('username')
+    def validate(self, attrs):
+        email = attrs.get('email')
         password = attrs.get('password')
 
         auth = AuthenticationBackend()
 
-        if username and password :
-            user = auth.authenticate(username=username, password=password)
+        if email and password :
+            user = auth.authenticate(email=email, password=password)
         else :
             msg = _('Must include "email" and "password".')
             raise exceptions.ValidationError(msg)

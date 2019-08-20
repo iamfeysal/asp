@@ -31,27 +31,61 @@ class ListUsersView(viewsets.ModelViewSet) :
     # ordering_fields = ('date_joined',)
     # search_fields = ('username')
 
+    def create(self, request, *args, **kwargs):
+        print("create function")
+        if 'user' in request.data:
+            user = User.objects.get(id=id)
+            print('user is:', user.email)
+            try:
+                user = User.objects.get(user=user.id)
+                user.save()
+                serializer = UserSerializer(user,many=False)
+                response = {'message' : 'user updated',
+                            'result' : serializer.data}
+                print(response)
+                return Response(response, status=status.HTTP_200_OK)
 
-    def create(self, request):
-        """
-        Create user with validated data from the serializer class
-        """
-        serializer = self.serializer_class(data=request.data)
 
-        if serializer.is_valid():
-            User.objects.create_user(**serializer.validated_data)
+            except:
+                User.objects.create(use=user)
+                serializer = UserSerializer(user, many=False)
+                response = {'message' : 'user created',
+                            'result' : serializer.data}
+                print(response)
+                return Response(response, status=status.HTTP_200_OK)
+            # response = {'message':'user updated','result':serializer.data}
+            # return Response(response,status=status.HTTP_200_OK)
 
-            return Response(serializer.validated_data,
-                            status=status.HTTP_201_CREATED)
-
-        return Response({
-            'status': 'Bad request',
-            'message': 'User account could not be created with received data.'
-        }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            response = {'message':'need to provide user',}
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)
+        
+    #     print('create post method')
+    #     """
+    #     Create user with validated data from the serializer class
+    #     """
+    #     serializer = self.serializer_class(data=request.data)
+    # 
+    #     if serializer.is_valid():
+    #         User.objects.create_user(**serializer.validated_data)
+    #         print('create method', serializer.validated_data)
+    # 
+    #         return Response(serializer.validated_data,
+    #                         status=status.HTTP_201_CREATED)
+    #     else:
+    #         User.objects.get(**serializer.validated_data)
+    #         response = {'message':'getting item','result':serializer.validated_data,}
+    #         print('get method', response)
+    #         return Response(response, status=status.HTTP_200_OK)
+        # return Response({
+        #     'status': 'Bad request',
+        #     'message': 'User account could not be created with received data.'
+        # }, status=status.HTTP_400_BAD_REQUEST)
 
 
 
 class LoginView(GenericAPIView):
+    print('hit login view')
     """Login View.
 
     post:
@@ -69,8 +103,10 @@ class LoginView(GenericAPIView):
 
     def login(self):
         self.user = self.serializer.validated_data['user']
+        print(self.user)
         self.token, created = self.token_model.objects.get_or_create(
             user=self.user)
+        print(self.token)
         if getattr(settings, 'REST_SESSION_LOGIN', True):
             login(self.request, self.user)
 
@@ -114,7 +150,6 @@ class LogoutView(APIView):
     Accepts/Returns nothing.
     """
 
-
     def post(self, request):
         try:
             request.user.auth_token.delete()
@@ -123,6 +158,4 @@ class LogoutView(APIView):
         logout(request)
         return Response({"success": "Successfully logged out."},
                         status=status.HTTP_200_OK)
-
-
 

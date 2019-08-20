@@ -23,17 +23,16 @@ class AuthenticationBackend(ModelBackend):
         against the given password
         """
         # username or email patch since django default is username
-        username = credentials.get('username')
+        # username = credentials.get('username')
         email = credentials.get('email')
 
-        login_parameter = username if username  else email
+        login_parameter = email
         pwd_valid = credentials.get('password')
 
-        if login_parameter and pwd_valid:
-            try:
+        if login_parameter and pwd_valid :
+            try :
                 user = USER.objects.get(
-                    Q(email__iexact=login_parameter) |
-                    Q(username__iexact=login_parameter))
+                    Q(email__iexact=login_parameter))
             except USER.DoesNotExist as not_exists_e:
                 LOGGER.error(not_exists_e)
                 return None
