@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth import admin as auth_admin
 from django.utils.translation import gettext, gettext_lazy as _
-from authentication.models import User, UserProfile, Skill, UserFeedback
+from authentication.models import User, UserProfile, Skill, UserFeedback, \
+    Notification
 from authentication.forms import UserChangeForm, UserCreationForm
 from django.contrib import admin
 
@@ -30,8 +31,9 @@ class MyUserAdmin(auth_admin.UserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
     model = User
-    list_display = ('email', 'is_player', 'is_coach', 'date_joined',
-                    'is_admin', 'is_active', 'is_staff', 'is_superuser',
+    list_display = ('email', "first_name", "second_name" , "full_name",
+                    'is_player', 'is_coach', 
+                     'date_joined','is_admin', 'is_active', 'is_staff', 'is_superuser',
                     'last_login')  #
     # Contain
     # only
@@ -51,10 +53,13 @@ class MyUserAdmin(auth_admin.UserAdmin):
 
     fieldsets = (
         (_('Personal info'),
-         {'fields' : ('email', 'password', 'is_player', 'is_coach',)}),
+         {'fields' : ('email', "first_name", "second_name", 'password', 
+                      'is_player', 'is_coach',
+    )}),
         (_('Permissions'), {'fields' : ('is_admin', 'is_staff',
                                         'is_superuser', 'is_active'), }),
         (_('Important dates'), {'fields' : ('last_login', 'date_joined')}),
+        (_('Relationship'), {'fields' : ('followers', 'following')}),
     )
 
     add_fieldsets = (
@@ -135,3 +140,10 @@ class MyUserAdmin(auth_admin.UserAdmin):
 admin.site.register(User, MyUserAdmin, )  
 admin.site.register(Skill,)
 admin.site.register(UserFeedback)
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = (
+        'creator',
+        'to',
+        'notification_type'
+    )

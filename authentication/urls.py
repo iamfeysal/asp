@@ -3,7 +3,8 @@ from rest_framework.authtoken.views import obtain_auth_token
 
 from authentication.api_views import ListUsersView, LoginView, LogoutView, \
     ListUsersProfiles, UserFeedbackViewSet, ConfirmResetPasswordView, \
-    ChangePasswordView, ResetPasswordView
+    ChangePasswordView, ResetPasswordView, FollowUser, UnFollowUser, \
+    UserFollowers, UserFollowing
 from authentication.views import SignUp
 from rest_framework import routers
 
@@ -22,8 +23,11 @@ urlpatterns = [
     path('sign_up', SignUp, name='sign_up'),
     re_path('', include(router.urls)),
     re_path(r'^auth-token$', obtain_auth_token),
-    # re_path(r'^users$', ListUsersView.as_view({'get': 'list'})),
-    # re_path(r'^user_profiles$', ListUsersProfiles.as_view({'get': 'list'})),
+    path("<int:user_id>/follow/", FollowUser.as_view(), name="follow_user"),
+    path("<int:user_id>/unfollow/", UnFollowUser.as_view(), 
+         name="unfollow_user"),
+    path("<first_name>/followers", UserFollowers.as_view(), name="user_followers"),
+    path("<first_name>/following", UserFollowing.as_view(), name="user_following"),
     re_path(r'^login$', LoginView.as_view(), name='login'),
     re_path(r'^logout$', LogoutView.as_view(), name='logout'),
     re_path(r'^password/reset$',ResetPasswordView.as_view(), name='password_reset'),

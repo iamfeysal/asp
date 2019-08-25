@@ -14,17 +14,16 @@ from asp.settings import AUTH_USER_MODEL
 from authentication.managers import UserManager
 
 
-class Skill(models.Model):
+class Skill(models.Model) :
     name = models.CharField(max_length=50)
 
-    class Meta:
-        
+    class Meta :
         permissions = (
             ("view_category", "view category"),
             ("add_category", "Add category"),
             ("delete_category", "Delete category"),
         )
-    
+
     def __str__(self) :
         return self.name
 
@@ -40,7 +39,14 @@ class User(AbstractBaseUser) :
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    first_name = models.CharField(max_length=255, blank=True, null=True)
+    second_name = models.CharField(max_length=255, blank=True, null=True)
     skills = models.ManyToManyField(Skill)
+    followers = models.ManyToManyField("self", blank=True, symmetrical=False,
+                                       related_name="followers_set")
+    following = models.ManyToManyField("self", blank=True, symmetrical=False,
+                                       related_name="following_set")
+    
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
@@ -54,7 +60,14 @@ class User(AbstractBaseUser) :
         )
 
     def __str__(self) :
-        return self.email
+        return self.full_name()
+    
+    def full_name(self):
+        """
+        :return: 
+        """
+        full_name = '%s %s' % (self.first_name, self.second_name)
+        return full_name.strip()
 
     def has_perm(self, perm, obj=None) :
         return self.is_admin
@@ -80,20 +93,28 @@ class User(AbstractBaseUser) :
         if created :
             Token.objects.create(user=instance)
 
-    def email_user(self, subject='welcome', message='welcome', 
-                   from_email='iamfeysal@gmail.com', **kwargs):
+    def email_user(self, subject='welcome', message='welcome',
+                   from_email='iamfeysal@gmail.com', **kwargs) :
         print('hit email function')
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
         print(send_mail)
 
-    def pre_save_listener(sender, instance, *args, **kwargs):
+    def pre_save_listener(sender, instance, *args, **kwargs) :
         if instance.is_player :
             instance.is_coach = False
         if instance.is_coach :
             instance.is_player = False
 
     pre_save.connect(receiver=pre_save_listener, sender=AUTH_USER_MODEL)
+
+    @property
+    def followers_count(self) :
+        return self.followers.all().count()
+
+    @property
+    def following_count(self) :
+        return self.following.all().count()
 
 
 class UserProfile(models.Model) :
@@ -109,7 +130,7 @@ class UserProfile(models.Model) :
         ('b', 'Both'),
     )
 
-    owner = models.OneToOneField(AUTH_USER_MODEL, null=True,
+    user = models.OneToOneField(AUTH_USER_MODEL, null=True,
                                 on_delete=models.CASCADE)
     image = models.ImageField(default='default.jpg', upload_to='profiles')
     birth_date = models.DateField(null=True)
@@ -121,14 +142,11 @@ class UserProfile(models.Model) :
     current_status = models.CharField(max_length=255,
                                       help_text='free agent or playing for larriskos  fc',
                                       blank=True, null=True)
-    fans = models.IntegerField(default=0)
-    first_name = models.CharField(max_length=255, blank=True, null=True)
-    second_name = models.CharField(max_length=255, blank=True, null=True)
     nickname = models.CharField(max_length=255, blank=True, null=True)
     bio = models.TextField(max_length=500, blank=True)
     location = models.CharField(max_length=30, blank=True)
     
-    class Meta:
+    class Meta :
         permissions = (
             ("view_profile", "view profile"),
             ("add_profile", "Add profile"),
@@ -138,26 +156,20 @@ class UserProfile(models.Model) :
     def age(self) :
         if self.birth_date is None :
             pass
-        else:
+        else :
             # handle case where there's no value for checkout 
             return int((datetime.now().date() - self.birth_date).days / 365.25)
 
-    def full_name(self) :
-        """
-        :return: 
-        """
-        full_name = '%s %s' % (self.first_name, self.second_name)
-        return full_name.strip()
-
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def update_user_profile(sender, instance, created, **kwargs) :
-        if created:
+        if created :
             UserProfile.objects.create(user=instance)
             instance.userprofile.save()
-        else:
+        else :
             print('updated')
 
-class PasswordResetRequest(models.Model):
+
+class PasswordResetRequest(models.Model) :
     """Password request model
 
     Stores Password Reset Details and data.
@@ -179,16 +191,16 @@ class PasswordResetRequest(models.Model):
     expiry_date = models.DateTimeField()
     is_active = models.BooleanField(default=True)
 
-    def has_expired(self):
+    def has_expired(self) :
         """Check whether is past expiry data"""
-        if timezone.now() > self.expiry_date:
+        if timezone.now() > self.expiry_date :
             self.is_active = False
             self.save()
             return True
         return False
-    
-    
-class UserFeedback(models.Model):
+
+
+class UserFeedback(models.Model) :
     """User Feedback model
 
     User Feed back collection form
@@ -211,9 +223,29 @@ class UserFeedback(models.Model):
     )
 
     owner = models.ForeignKey(AUTH_USER_MODEL, blank=True, null=True,
-                                    on_delete=models.SET_NULL)
+                              on_delete=models.SET_NULL)
     message = models.TextField(null=True, blank=True)
     date_submitted = models.DateTimeField(null=True)
     message_polarity = models.CharField(max_length=50, blank=True, null=True,
                                         choices=FEEDBACK_CHOICES,
                                         default="undefined")
+
+
+class Notification(models.Model) :
+    TYPE_CHOICES = (
+        ('like', 'Like'),  # first for DB, second for Admin pannel
+        ('comment', 'Comment'),
+        ('follow', 'Follow')
+    )
+
+    creator = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.PROTECT,
+                                related_name='creator')
+    to = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.PROTECT,
+                           related_name='to')
+    notification_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+
+    class Meta :
+        ordering = ['-notification_type']
+
+    def __str__(self) :
+        return 'From : {} - To : {}'.format(self.creator, self.to)

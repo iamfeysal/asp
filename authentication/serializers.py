@@ -6,7 +6,8 @@ from rest_framework.authtoken.models import Token
 
 from authentication.auth_backends import AuthenticationBackend
 from django.utils.translation import ugettext_lazy as _
-from authentication.models import User, UserProfile, Skill, UserFeedback
+from authentication.models import User, UserProfile, Skill, UserFeedback, \
+    Notification
 
 
 class UserProfileSerializer(serializers.ModelSerializer) :
@@ -15,12 +16,12 @@ class UserProfileSerializer(serializers.ModelSerializer) :
     gender = serializers.CharField(source='get_gender_display')
     print("hit user serializer")
 
-    class Meta :
+    class Meta:
         model = UserProfile
         # users = serializers.ReadOnlyField()
         fields = (
-            "id", "owner", "first_name", "second_name", "full_name", "nickname",
-            "birth_date", "foot_choice",  "nationality", "current_status","fans", "gender", "age")
+            "id", "user", "nickname","birth_date", "foot_choice", 
+            "nationality", "current_status", "gender", "age")
         
 class UserFeedbackSerializer(serializers.ModelSerializer):
     """
@@ -51,7 +52,8 @@ class UserSerializer(serializers.ModelSerializer) :
     class Meta :
         model = User
         fields = (
-            "id", "email", "password", "date_joined", "last_login", 
+            "id", "email", "full_name", "password", "date_joined", 
+            "last_login", "followers_count","following_count",
             "userfeedback", "userprofile", "skills", )
 
         # read_only_fields = ('date_joined', "password", 'last_login', 'userprofile')
@@ -65,7 +67,6 @@ class UserSerializer(serializers.ModelSerializer) :
             # user.set_password(password)
             # user.save()
             user = User.objects.create_user(**validated_data)
-            print('user is:', user)
             return user
 
         def update(self, instance, validated_data) :
@@ -185,3 +186,10 @@ class ChangePasswordSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         pass
         
+
+class NotificationSerializer(serializers.ModelSerializer):
+
+    creator = UserSerializer()
+    class Meta:
+     model = Notification
+     fields = '__all__'
