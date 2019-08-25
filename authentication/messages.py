@@ -3,18 +3,16 @@ import logging
 from django.views import debug
 
 
-from django.core.mail import send_mail
 from django.core.mail import send_mail, BadHeaderError
-from smtplib import SMTPException
 
 LOGGER = logging.getLogger(__name__)
 
 
 def send_email(subject, message, recipient_list=None, **kwargs):
-    print("hit send email function")
-    if not debug :
+    print('hit messages: send email function')
+    if  debug :
         category = 'email'
-        from_email = kwargs.pop('from_email', 'iamfeysal@shopsoko.com')
+        from_email = kwargs.pop('from_email', 'iamfeysal@gmail.com')
         print(from_email)
         html_message = kwargs.pop('html_message', None)
         print(html_message)
@@ -26,7 +24,7 @@ def send_email(subject, message, recipient_list=None, **kwargs):
         try:
             response = send_mail(
                 subject, message, from_email, recipient_list,
-                fail_silently=False, html_message=html_message, **kwargs, obj=obj
+                html_message=html_message, **kwargs
             )
             print(response)
             return response

@@ -1,74 +1,51 @@
 from rest_framework import generics, filters, viewsets, status
 from rest_framework.authentication import TokenAuthentication
+from rest_framework import serializers, exceptions
 from django.contrib.auth import login, logout
 
 from django.conf import settings
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, UpdateAPIView
 from rest_framework.settings import api_settings
 from rest_framework.views import APIView
 
 from authentication.serializers import UserSerializer, LoginSerializer, \
-    TokenSerializer, UserProfileSerializer
+    TokenSerializer, UserProfileSerializer, UserFeedbackSerializer, \
+    ChangePasswordSerializer, ResetPasswordSerializer, \
+    ConfirmResetPasswordSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
-from authentication.models import User, UserProfile
+from authentication.models import User, UserProfile, UserFeedback, PasswordResetRequest
+
+
+from authentication.messages import send_mail, send_email
+from authentication.repositories import find_active_password_request
+from authentication.helpers import validate_string, send_email_for_password_reset
 
 
 class ListUsersView(viewsets.ModelViewSet) :
     serializer_class = UserSerializer
     queryset = User.objects.all()
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
 
-    # # filter the collections
-    # filter_backends = (DjangoFilterBackend, filters.SearchFilter,
-    #                    filters.OrderingFilter,)
-    # filter_fields = ('username')
-    # ordering_fields = ('date_joined',)
-    # search_fields = ('username')
+    # permission_classes = (IsAuthenticated,)
 
     def post(self, request, format=None) :
         serializer = UserSerializer(data=request.data)
-        if serializer.is_valid() :
+        if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    # def create(self, validated_data):
-    # 
-    #     # create user 
-    #     user = User.objects.create(
-    #         email = validated_data['email'],
-    #         password= validated_data['password']
-    #         # etc ...
-    #     )
-    # 
-    #     profile_data = validated_data.pop('profile')
-    #     # create profile
-    #     profile = UserProfile.objects.create(
-    #         user = user,
-    #         nationality = profile_data['nationality'],
-    #         # etc...
-    #     )
 
 
 class ListUsersProfiles(viewsets.ModelViewSet) :
     serializer_class = UserProfileSerializer
     queryset = UserProfile.objects.all()
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
 
-    
-
-    # # filter the collections
-    # filter_backends = (DjangoFilterBackend, filters.SearchFilter,
-    #                    filters.OrderingFilter,)
-    # filter_fields = ('username')
-    # ordering_fields = ('date_joined',)
-    # search_fields = ('username')
+    # permission_classes = (IsAuthenticated,)
 
     def create(self, request, *args, **kwargs) :
         print("create user profile function")
@@ -99,30 +76,8 @@ class ListUsersProfiles(viewsets.ModelViewSet) :
             response = {'message' : 'you need to provide user profile', }
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
-    #     print('create post method')
-    #     """
-    #     Create user with validated data from the serializer class
-    #     """
-    #     serializer = self.serializer_class(data=request.data)
-    # 
-    #     if serializer.is_valid():
-    #         User.objects.create_user(**serializer.validated_data)
-    #         print('create method', serializer.validated_data)
-    # 
-    #         return Response(serializer.validated_data,
-    #                         status=status.HTTP_201_CREATED)
-    #     else:
-    #         User.objects.get(**serializer.validated_data)
-    #         response = {'message':'getting item','result':serializer.validated_data,}
-    #         print('get method', response)
-    #         return Response(response, status=status.HTTP_200_OK)
-    # return Response({
-    #     'status': 'Bad request',
-    #     'message': 'User account could not be created with received data.'
-    # }, status=status.HTTP_400_BAD_REQUEST)
 
-
-class LoginView(GenericAPIView):
+class LoginView(GenericAPIView) :
     print('hit login view')
     """Login View.
 
@@ -195,3 +150,146 @@ class LogoutView(APIView) :
         logout(request)
         return Response({"success" : "Successfully logged out."},
                         status=status.HTTP_200_OK)
+
+class ResetPasswordView(GenericAPIView) :
+    """Reser Password View.
+
+    Resets user's password
+    post:
+    Takes ``phone`` request field and,
+    Returns either ``success`` or ``failed``
+    """
+
+    serializer_class = ResetPasswordSerializer
+    permission_classes = (AllowAny,)
+
+    def post(self, request, *args, **kwargs) :
+        # fetch submitted data
+        reset_status, token, uuid = \
+            send_email_for_password_reset(request, request.data['email'])
+
+        if token :
+            resp_status = status.HTTP_200_OK
+        else :
+            resp_status = status.HTTP_400_BAD_REQUEST
+
+        return Response(
+            {"status" : reset_status, "uuid" : uuid},
+            status=resp_status)
+
+
+class ConfirmResetPasswordView(GenericAPIView):
+    """Confirm password request from api post
+
+    Arguements:
+        new_password{string}
+        new_password_repeat{string}
+        uuid{string}
+    """
+
+    serializer_class = ConfirmResetPasswordSerializer
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        resp = {}
+        try:
+            password_request = find_active_password_request(
+                token=request.data['token'], unique_id=request.data['uuid'])
+
+        except PasswordResetRequest.DoesNotExist:
+            resp['status'] = "failed"
+            resp['message'] = "An unexpected error occurred."
+            response_status = status.HTTP_400_BAD_REQUEST
+            send_email(
+                'Password Reset: Red Flag',
+                'Incorrect password request Initiated with uuid:{} and '
+                'token:{}'.format(request.data['uuid'],
+                                  request.data['token']),
+                settings.UNAUTHORISED_REQUEST,
+                from_email='iamfeysal@gmail.com',
+                fail_silently=False,
+            )
+            return Response(resp, status=response_status)
+
+        try:
+            if request.data['new_password'] \
+                    == request.data['new_password_repeat']:
+
+                message, string_is_valid = \
+                    validate_string(request.data['new_password'])
+
+                if string_is_valid:
+                    password_request.reset_user \
+                        .set_password(request.data['new_password'])
+                    password_request.reset_user.save()
+                    password_request.is_active = False
+                    password_request.save()
+                    resp['status'] = "success"
+                    resp['message'] = "password successfully changed"
+                    response_status = status.HTTP_200_OK
+                else:
+                    resp['status'] = "failed"
+                    resp['message'] = message
+                    response_status = status.HTTP_400_BAD_REQUEST
+            else:
+                resp['status'] = "failed"
+                resp['message'] = "password do not match"
+                response_status = status.HTTP_400_BAD_REQUEST
+        except Exception as exception:
+            resp['status'] = "failed"
+            resp['message'] = "An error occurred."
+            # this should be moved to logging
+            send_email(
+                'Password Request Error',
+                'Error:{}'.format(exception),
+                settings.UNAUTHORISED_REQUEST,
+                from_email='iamfeysal@gmail.com',
+                fail_silently=False,
+            )
+            response_status = status.HTTP_400_BAD_REQUEST
+
+        return Response(resp, status=response_status)
+
+
+class ChangePasswordView(UpdateAPIView):
+    """Change Password View.
+
+    Calls Django Auth SetPasswordForm save method.
+    Accepts the following POST parameters:
+    ``old_password``, ``new_password1``, ``new_password2``
+    Returns the success/fail message.
+    """
+
+    serializer_class = ChangePasswordSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self, queryset=None):
+        obj = self.request.user
+        return obj
+
+    def update(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            # Check old password
+            if not self.object.check_password(
+                    serializer.data.get("old_password")):
+                return Response({"old_password": ["Wrong password."]},
+                                status=status.HTTP_400_BAD_REQUEST)
+            # set_password also hashes the password that the user will get
+            self.object.set_password(serializer.data.get("new_password"))
+            self.object.save()
+            return Response("New password has been saved.",
+                            status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UserFeedbackViewSet(viewsets.ModelViewSet):
+    """
+    Lists user feedbacks
+    """
+
+    queryset = UserFeedback.objects.all()
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UserFeedbackSerializer

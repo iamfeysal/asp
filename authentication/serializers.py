@@ -6,37 +6,58 @@ from rest_framework.authtoken.models import Token
 
 from authentication.auth_backends import AuthenticationBackend
 from django.utils.translation import ugettext_lazy as _
-from authentication.models import User, UserProfile
+from authentication.models import User, UserProfile, Skill, UserFeedback
 
 
 class UserProfileSerializer(serializers.ModelSerializer) :
-    foot_choice = serializers.CharField(source='get_nationality_display')
-    nationality = serializers.CharField(source='get_foot_choice_display')
-    marital_status = serializers.CharField(source='get_marital_status_display')
+    foot_choice = serializers.CharField(source='get_foot_choice_display')
+    nationality = serializers.CharField(source='get_nationality_display')
+    gender = serializers.CharField(source='get_gender_display')
     print("hit user serializer")
 
     class Meta :
         model = UserProfile
+        # users = serializers.ReadOnlyField()
         fields = (
-             "birth_date", "foot_choice", "nationality",
-            "marital_status", "age")
+            "id", "owner", "first_name", "second_name", "full_name", "nickname",
+            "birth_date", "foot_choice",  "nationality", "current_status","fans", "gender", "age")
+        
+class UserFeedbackSerializer(serializers.ModelSerializer):
+    """
+    Serializer for working with the feedback model
+    """
+
+    class Meta:
+        model = UserFeedback
+        fields = ("feedback_by", "message", "date_submitted",
+                  "message_polarity")
+
+
+class UserSkillsSerializer(serializers.ModelSerializer) :
+    name = serializers.CharField()
+    print("hit user serializer")
+
+    class Meta :
+        model = Skill
+        fields = '__all__'
 
 
 class UserSerializer(serializers.ModelSerializer) :
     print("hit user serializer")
     userprofile = UserProfileSerializer(read_only=True)
-
+    userfeedback = UserFeedbackSerializer(read_only=True)
+    skills = UserSkillsSerializer(read_only=True, many=True)
 
     class Meta :
         model = User
         fields = (
-            "id", "email", "password", "date_joined", "last_login", "userprofile")
+            "id", "email", "password", "date_joined", "last_login", 
+            "userfeedback", "userprofile", "skills", )
 
         # read_only_fields = ('date_joined', "password", 'last_login', 'userprofile')
-        extra_kwargs = {'password': {'write_only': True, 'required':True},}
+        extra_kwargs = {'password' : {'write_only' : True, 'required' : True}, }
 
-
-        def create(self, validated_data):
+        def create(self, validated_data) :
             """ Create user using given validated fields """
             # profile_data = validated_data.pop('profile')
             # password = validated_data.pop('password')
@@ -44,7 +65,7 @@ class UserSerializer(serializers.ModelSerializer) :
             # user.set_password(password)
             # user.save()
             user = User.objects.create_user(**validated_data)
-            print('user is:',user)
+            print('user is:', user)
             return user
 
         def update(self, instance, validated_data) :
@@ -54,10 +75,14 @@ class UserSerializer(serializers.ModelSerializer) :
 
             instance.email = validated_data.get('email', instance.email)
             instance.save()
-            profile.birth_date = profile_data.get('birth_date', profile.birth_date)
-            profile.foot_choice = profile_data.get('foot_choice', profile.foot_choice)
-            profile.nationality = profile_data.get('nationality', profile.nationality)
-            profile.marital_status = profile_data.get('marital_status', profile.marital_status)
+            profile.birth_date = profile_data.get('birth_date',
+                                                  profile.birth_date)
+            profile.foot_choice = profile_data.get('foot_choice',
+                                                   profile.foot_choice)
+            profile.nationality = profile_data.get('nationality',
+                                                   profile.nationality)
+            profile.marital_status = profile_data.get('marital_status',
+                                                      profile.marital_status)
             profile.age = profile_data.get('age', profile.age)
             return profile
             # instance.email = validated_data.get(
@@ -119,3 +144,44 @@ class TokenSerializer(serializers.ModelSerializer) :
     class Meta :
         model = Token
         fields = ('key',)
+        
+class ResetPasswordSerializer(serializers.Serializer):
+    """
+    Serializer for requesting a password reset
+    """
+    email = serializers.CharField(required=False)
+
+    def create(self, validated_data):
+        pass
+
+    def update(self, instance, validated_data):
+        pass
+
+
+class ConfirmResetPasswordSerializer(serializers.Serializer):
+    """Serializer for confirming a password reset"""
+
+    new_password = serializers.CharField(max_length=128)
+    new_password_repeat = serializers.CharField(max_length=128)
+    uuid = serializers.CharField(required=True)
+    token = serializers.CharField(required=True)
+
+    def create(self, validated_data):
+        pass
+
+    def update(self, instance, validated_data):
+        pass
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    """Serializer for updating a password."""
+
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    def create(self, validated_data):
+        pass
+
+    def update(self, instance, validated_data):
+        pass
+        

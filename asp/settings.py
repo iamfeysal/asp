@@ -43,13 +43,15 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_filters',
     'django_countries',
+    'corsheaders',
     'authentication.apps.UsersConfig',
 
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES':(
-        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
         # 'authentication.permissions.SuPermission',
 
     )
@@ -57,9 +59,9 @@ REST_FRAMEWORK = {
 
 
 AUTH_USER_MODEL = 'authentication.User'
-
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'home'
+# 
+# LOGIN_REDIRECT_URL = 'home'
+# LOGOUT_REDIRECT_URL = 'home'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -69,9 +71,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'asp.urls'
+
+CORS_ORIGIN_ALLOW_ALL = True
+
 
 TEMPLATES = [
     {

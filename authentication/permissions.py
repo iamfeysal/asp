@@ -1,9 +1,13 @@
 from rest_framework import permissions
 
 
-class SuPermission(permissions.BasePermission) :
+class IsOwnerOrReadOnly(permissions.BasePermission):
+    """Custom permission to only allow owners of an object to edit it."""
 
-    def has_permission(self, request, view) :
-        print("hit permission function")
-        if request.user.is_authenticated and request.user.is_superuser:
-            return "pass"
+    def has_object_permission(self, request, view, obj):
+        # Read permissions are allowed to any request,
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        # Write permissions are only allowed to the owner of the snippet.
+        return obj.owner == request.user

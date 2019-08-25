@@ -36,6 +36,17 @@ class AuthenticationBackend(ModelBackend):
             except USER.DoesNotExist as not_exists_e:
                 LOGGER.error(not_exists_e)
                 return None
-
             if user.check_password(pwd_valid):
                 return user
+
+    def has_perm(self, user_obj, perm, obj=None):
+        if perm == "view_users" :
+            return True  
+            # everybody can view
+        # otherwise only the owner or the superuser can delete
+        return user_obj.is_active and obj.user.pk == user_obj.pk
+
+    def has_perms(self, user_obj, perm_list, obj=None) :
+        return all(self.has_perm(user_obj, perm, obj) for perm in perm_list)
+
+
