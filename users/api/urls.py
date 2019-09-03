@@ -5,10 +5,10 @@ from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework import routers
 
 from users.api.views import UserFeedbackViewSet, ExploreCoaches, ExplorePlayers, \
-    FollowUser, UnFollowUser, UserFollowers, UserFollowing, ListUsersView
+    FollowUser, UnFollowUser, UserFollowers, UserFollowing, UserViewSet
 
 router = routers.DefaultRouter()
-router.register(r'users', ListUsersView)
+router.register(r'createuser', UserViewSet)
 router.register(r'feedback', UserFeedbackViewSet)
 # router.register(r'devices', DeviceViewSet)
 # router.register(r'messagetemplate', CreateMessageTemplateViewSet)

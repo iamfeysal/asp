@@ -1,11 +1,18 @@
+import itertools
 import uuid
 from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser
+from django.core import validators
 from django.core.mail import send_mail
 from django.db import models
+from django.db.models import ImageField
+from django.template.defaultfilters import slugify
+# from sorl.thumbnail import ImageField
+
 
 # Create your models here.
 from django.db.models.signals import post_save, pre_save
+from django.utils.translation import ugettext_lazy as _
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
@@ -28,10 +35,25 @@ class Skill(models.Model) :
 
 
 class User(AbstractBaseUser):
+    username = models.SlugField(_('username'), max_length=50, unique=True,
+                                help_text=_('Required. 50 characters or fewer.'
+                                            ' Letters, digits and'
+                                            ' @/./+/-/_ only.'),
+                                validators=[validators.RegexValidator(
+                                    r'^[\w.@+-]+$',
+                                    _('Enter a valid username. '
+                                      'This value may contain only letters,'
+                                      ' numbers and @/./+/-/_ characters.'),
+                                    'invalid'), ],
+                                error_messages={
+                                    'unique' : _("A user with that"
+                                                 " username already exists."), }
+                                )
+    first_name = models.CharField(_('first name'), max_length=255, blank=True)
+    last_name = models.CharField(_('last name'), max_length=100, blank=True)
     email = models.EmailField(verbose_name="email", max_length=60, unique=True)
-    displayed_name = models.CharField(verbose_name='displayed_name', 
-                                      max_length=60, null=True, blank=True,
-                                      unique=True)
+    avatar = ImageField(upload_to='avatars/%Y/%m',
+                        default='avatars/default/user.png')
     date_joined = models.DateTimeField(verbose_name='date joined',
                                        auto_now_add=True)
     is_player = models.BooleanField('player status', default=False)
@@ -41,8 +63,6 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
-    first_name = models.CharField(max_length=255, blank=True, null=True)
-    second_name = models.CharField(max_length=255, blank=True, null=True)
     skills = models.ManyToManyField(Skill)
     followers = models.ManyToManyField("self", blank=True, symmetrical=False,
                                        related_name="followers_set")
@@ -61,20 +81,52 @@ class User(AbstractBaseUser):
             ("ad_user", "Add user"),
             ("dlt_user", "Delete user"),
         )
+        
+        
+    @property
+    def full_name(self):
+        """A longer formal identifier for the user.
 
-    # def __str__(self):
-    #     if self.displayed_name == None :
-    #         return 'displayed is none'
-    #     return self.displayed_name.split('@')[0]
-    def __str__(self):
-        return self.email
+        Returns first name plus the last name
+        """
+        return '%s %s' % (self.first_name, self.last_name)
 
-    # def full_name(self):
-    #     """
-    #     :return:
-    #     """
-    #     full_name = '%s %s' % (self.first_name, self.second_name)
-    #     return full_name.strip()
+    @property
+    def short_name(self):
+        """A short, informal identifier for the user.
+
+        Returns last name as short name
+        """
+        return self.last_name
+
+    @property
+    def profile_picture(self):
+        """Return user's profile picture (avatar)"""
+        return self.avatar
+
+    def __str__(self) :
+        """String Representation."""
+        return "{} {}".format(self.first_name, self.last_name)
+    
+    def save(self, force_insert=False, force_update=False,
+             using=None, update_fields=None):
+        """Override save model."""
+        if not self.username:
+            max_length = self.__class__._meta.get_field('username').max_length
+            self.username = orig = slugify(
+                self.last_name or self.email)[:max_length]
+            for x in itertools.count(1):
+                if not self.__class__.objects.filter(
+                        username=self.username).exists():
+                    break
+                self.username = "%s-%d" % (orig[:max_length -
+                                                len(str(x)) - 1], x)
+        else:
+            self.username = slugify(self.username)
+
+        super(User, self).save(force_insert=force_insert,
+                               force_update=force_update, using=using,
+                               update_fields=update_fields)
 
     def has_perm(self, perm, obj=None):
         return self.is_admin
@@ -98,12 +150,7 @@ class User(AbstractBaseUser):
         send_mail(subject, message, from_email, [self.email], **kwargs)
         print(send_mail)
 
-    def random_username(sender, instance, **kwargs):
-        if not instance.displayed_name :
-            instance.displayed_name = uuid.uuid4().hex[:30]
-
-    models.signals.pre_save.connect(random_username, sender=settings.AUTH_USER_MODEL)
-
+   
     def pre_save_listener(sender, instance, *args, **kwargs) :
         if instance.is_player :
             instance.is_coach = False

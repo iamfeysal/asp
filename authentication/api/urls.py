@@ -9,20 +9,6 @@ from authentication.views import SignUp
 
 router = routers.DefaultRouter()
 
-# router.register('user', ListUsersView, ListUsersProfiles)
-# router.register('profiles', ListUsersProfiles)
-# router.register(r'userfeedback', UserFeedbackViewSet)
-
-# router.register('login', LoginView, basename='login')
-# router.register('logout', LogoutView, basename='logout')
-# router.register('password-reset', ResetPasswordView, basename='password-reset')
-# router.register('password-reset-confirm', ConfirmResetPasswordView, 
-#                 basename='password-reset-confirm')
-# router.register('password-change', ChangePasswordView, 
-#                 base_name='password-change')
-
-
-
 app_name = "authentication"
 
 

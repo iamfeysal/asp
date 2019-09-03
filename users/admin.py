@@ -41,7 +41,7 @@ class MyUserAdmin(auth_admin.UserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
     model = User
-    list_display = ('email', "first_name", "second_name", "displayed_name",
+    list_display = ('email', "first_name", "last_name", "username",
                     'is_player', 'is_coach', 
                      'date_joined','is_admin', 'is_active', 'is_staff', 'is_superuser',
                     'last_login')  #
@@ -63,7 +63,7 @@ class MyUserAdmin(auth_admin.UserAdmin):
 
     fieldsets = (
         (_('Personal info'),
-         {'fields' : ('email', "first_name", "second_name",'displayed_name', 
+         {'fields' : ('email', "first_name", "last_name", "username", 
                       'password', 'is_player', 'is_coach',
     )}),
         (_('Permissions'), {'fields' : ('is_admin', 'is_staff',

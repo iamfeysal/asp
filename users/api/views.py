@@ -9,27 +9,58 @@ from users.api.serializers import UserSerializer, UserFeedbackSerializer
 from users.models import User, Notification, UserFeedback
 from users.api.serializers import NotificationSerializer
 
-
-class ListUsersView(viewsets.ModelViewSet):
+# 
+# class ListUsersView(viewsets.ModelViewSet):
+#     
+#     # print('hit list user view')
+#     serializer_class = UserSerializer
+#     queryset = User.objects.all()
+#     authentication_classes = (TokenAuthentication,)
+#     # # permission_classes = (IsAuthenticated,)
+# 
+#     def post(self, request, format=None) :
+#         
+#         print('hit user post-------------------------')
+#         serializer = self.serializer_class(data=request.data)
+#         print(serializer)
+#         if serializer.is_valid():
+#             print(serializer.is_valid())
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    # print('hit list user view')
-    serializer_class = UserSerializer
+
+class UserViewSet(viewsets.ModelViewSet):
+    """User ViewSet.
+
+    get:
+    List all users
+
+    put:
+    Create new user with the given validated data
+
+    """
+
     queryset = User.objects.all()
+    serializer_class = UserSerializer
     authentication_classes = (TokenAuthentication,)
-    # # permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
-    def post(self, request, format=None) :
-        
-        print('hit user post-------------------------')
+
+    def create(self, request):
+        print('hit create view')
+        """
+        Create user with validated data from the serializer class
+        """
         serializer = self.serializer_class(data=request.data)
-        print(serializer)
-        if serializer.is_valid():
-            print(serializer.is_valid())
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 
+        if serializer.is_valid():
+            print(serializer.is_valid)
+            User.objects._create_user(**serializer.validated_data)
+            return Response(serializer.validated_data,
+                            status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserFeedbackViewSet(viewsets.ModelViewSet) :

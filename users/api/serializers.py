@@ -1,3 +1,4 @@
+from django.contrib.auth import update_session_auth_hash, get_user_model
 from rest_framework import serializers
 
 from profiles.api.serializers import UserProfileSerializer
@@ -27,27 +28,33 @@ class UserSerializer(serializers.ModelSerializer):
     userprofile = UserProfileSerializer(read_only=True)
     # userfeedback, = UserFeedbackSerializer()
     skills = UserSkillsSerializer(read_only=True, many=True)
+    password = serializers.CharField(write_only=True, required=True)
+    # confirm_password = serializers.CharField(write_only=True, required=False)
 
     class Meta:
         model = User
         fields = (
-            "id", "email", "password", "date_joined", "displayed_name",
+            "id", "email", "password", "date_joined", 
             "last_login", "followers_count","following_count",
-             "userprofile", "skills", )
+             "userprofile", "skills",  'password', )
 
         # read_only_fields = ('date_joined', "password", 'last_login', 'userprofile')
-        extra_kwargs = {'password' : {'write_only' : True, 'required' : True}, }
-
-        def create(self, validated_data) :
-            print('hit users serializer create function')
+        # extra_kwargs = {'password' : {'write_only' : True, 'required' : True}, }
+        
+        def create(self, validated_data):
             """ Create user using given validated fields """
-            # profile_data = validated_data.pop('profile')
-            # password = validated_data.pop('password')
-            # user = User(**validated_data)
-            # user.set_password(password)
-            # user.save()
-            user = User.objects.create_user(**validated_data)
-            return user
+            return User.objects._create_user(**validated_data)
+
+        # def create(self, validated_data) :
+        #     print('hit users serializer create function')
+        #     """ Create user using given validated fields """
+        #     # profile_data = validated_data.pop('profile')
+        #     # password = validated_data.pop('password')
+        #     # user = User(**validated_data)
+        #     # user.set_password(password)
+        #     # user.save()
+        #     user = User.objects.create_user(**validated_data)
+        #     return user
 
         def update(self, instance, validated_data) :
             """ Update user details """
@@ -65,6 +72,13 @@ class UserSerializer(serializers.ModelSerializer):
             profile.marital_status = profile_data.get('marital_status',
                                                       profile.marital_status)
             profile.age = profile_data.get('age', profile.age)
+            password = validated_data.get('password', None)
+            confirm_password = validated_data.get('confirm_password', None)
+
+            if password and confirm_password and password == confirm_password :
+                profile.set_password(password)
+                profile.save()
+            update_session_auth_hash(self.context.get('request'), instance)
             return profile
             # instance.email = validated_data.get(
             #     'email', instance.email)
@@ -79,6 +93,16 @@ class UserSerializer(serializers.ModelSerializer):
             # update_session_auth_hash(self.context.get('request'), instance)
             # return instance
 
+class CreateUserSerializer(serializers.ModelSerializer):
+    """
+    User model without password
+    """
+
+    class Meta:
+        model = get_user_model()
+        fields = ('id', 'username', 'password', 'email', 'last_name',
+                  'first_name', 'gender', 'contact_phone', 'is_staff',
+                  'is_active', 'profile_picture', 'avatar')
 
 class NotificationSerializer(serializers.ModelSerializer):
 
