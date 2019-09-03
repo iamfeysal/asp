@@ -28,9 +28,8 @@ class AuthenticationBackend(ModelBackend):
 
         login_parameter = email
         pwd_valid = credentials.get('password')
-
         if login_parameter and pwd_valid :
-            try :
+            try:
                 user = USER.objects.get(
                     Q(email__iexact=login_parameter))
             except USER.DoesNotExist as not_exists_e:
@@ -40,8 +39,8 @@ class AuthenticationBackend(ModelBackend):
                 return user
 
     def has_perm(self, user_obj, perm, obj=None):
-        if perm == "view_users" :
-            return True  
+        if perm == "view_users":
+            return True 
             # everybody can view
         # otherwise only the owner or the superuser can delete
         return user_obj.is_active and obj.user.pk == user_obj.pk

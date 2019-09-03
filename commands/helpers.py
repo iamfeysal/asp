@@ -1,8 +1,9 @@
 import re
-from authentication.messages import send_email
-from authentication.repositories import new_reset_request_for_user_with_email
+from commands.messages import send_email
+from commands.repositories import new_reset_request_for_user_with_email
 # from asp.settings import AUTH_USER_MODEL
-from authentication.models import User
+from users.models import User
+
 
 def send_email_for_password_reset(request,email):
     """Takes care of user password ressetting"""

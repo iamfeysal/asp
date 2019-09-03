@@ -5,6 +5,7 @@ class UserManager(BaseUserManager) :
     """Create user given email and password"""
 
     def create_user(self, email, password, **extra_fields):
+        print('print create user view function')
         if not email:
             raise ValueError('Users must have an email address')
         user = self.model(
@@ -21,7 +22,7 @@ class UserManager(BaseUserManager) :
         extra_fields.setdefault('is_superuser', False)
         return self._create_user(email, password, **extra_fields)
 
-    def create_superuser(self, email, password) :
+    def create_superuser(self, email, password):
         user = self.create_user(
             email=self.normalize_email(email),
             password=password,
@@ -37,7 +38,7 @@ class UserManager(BaseUserManager) :
         """Create Staff user account"""
         extra_fields.setdefault('is_staff', True)
 
-        if extra_fields.get('is_staff') is not True :
+        if extra_fields.get('is_staff') is not True:
             raise ValueError('Staff must have is_staff=True.')
 
         return self._create_user(email, password, **extra_fields)

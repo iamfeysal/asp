@@ -1,20 +1,28 @@
 from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
 from django.shortcuts import redirect, render
-from django.urls import reverse_lazy
-from django.views import generic
 from django.views.generic import TemplateView
 from .forms import UserCreationForm
 from django.http import HttpResponseRedirect, Http404
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
-from .models import AUTH_USER_MODEL, PasswordResetRequest
-from .helpers import send_email_for_password_reset
-from .repositories import find_active_password_request, reset_password
+from .models import PasswordResetRequest
+from commands.helpers import send_email_for_password_reset
+from commands.repositories import find_active_password_request, reset_password
 
 class HomePageView(TemplateView) :
     template_name = 'home.html'
+
+
+color_list = [
+            'rgb(255, 99, 132)', 'rgb(255, 159, 64)', 'rgb(255, 205, 86)', 'rgb(75, 192, 192)', 'rgb(54, 162, 235)',
+            'rgb(153, 102, 255)', 'rgb(201, 203, 207)', '#f44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5',
+            '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107',
+            '#FF9800', '#FF5722', '#795548', '#9E9E9E', '#607D8B', '#b71c1c', '#880E4F', '#4A148C', '#311B92',
+            '#1A237E', '#0D47A1', '#01579B', '#006064', '#004D40', '#1B5E20', '#33691E', '#827717', '#F57F17',
+            '#FF6F00', '#E65100', '#BF360C', '#3E2723', '#212121', '#263238'
+        ]
 
 def SignUp(request) :
     print('hit function')

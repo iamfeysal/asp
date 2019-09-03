@@ -9,7 +9,7 @@ from hashlib import sha512
 
 from django.utils import timezone
 from authentication.models import PasswordResetRequest
-from authentication.models import User
+from users.models import User
 
 
 # def new_reset_request_for_user_with_phone_number(phone_number):

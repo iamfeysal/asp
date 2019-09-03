@@ -1,65 +1,6 @@
-# from django import forms
-# from django.forms import ModelForm, Textarea, TextInput, Select
-# from django.contrib.admin import widgets
-# from django.contrib.admin.widgets import FilteredSelectMultiple
-# from django.contrib.admin import widgets
-# from django.contrib.auth.forms import ReadOnlyPasswordHashField
-# from django.utils.translation import ugettext_lazy as _, get_language
-# from authentication.models import User
-#
-#
-# class UserAddForm(forms.ModelForm):
-#     """A form for creating new users.
-#
-#     Includes all the required fields, plus a repeated password.
-#     """
-#     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-#     password2 = forms.CharField(
-#         label='Password confirmation', widget=forms.PasswordInput)
-#
-#     class Meta:
-#         model = User
-#         fields = ('email', 'is_player', 'is_coach')
-#
-#     def clean_password2(self):
-#         # Check that the two password entries match
-#         password1 = self.cleaned_data.get("password1")
-#         password2 = self.cleaned_data.get("password2")
-#         if password1 and password2 and password1 != password2:
-#             raise forms.ValidationError("Passwords don't match")
-#         return password2
-#
-#     def save(self, commit=True):
-#         # Save the provided password in hashed format
-#         user = super(UserAddForm, self).save(commit=False)
-#         user.set_password(self.cleaned_data["password1"])
-#         if commit:
-#             user.save()
-#         return user
-#
-#
-# class UserChangeForm(forms.ModelForm):
-#     """A form for updating users.
-#
-#     Includes all the fields on the user,
-#     but replaces the password field with admin's password hash display field.
-#     """
-#     password = ReadOnlyPasswordHashField(label=_("Password"),
-#                                          help_text=_("Raw passwords are not stored, so there is no way to see "
-#                                                      "this user's password, but you can change the password "
-#                                                      "using <a href=\"password/\">this form</a>."))
-#
-#     class Meta:
-#         model = User
-#         fields = ('email', 'is_player', 'is_coach')
-#
-#     def clean_password(self):
-#         return self.initial["password"]
-
-
 from django import forms
 from django.contrib.auth import forms as auth_forms
-from authentication.models import User, UserFeedback
+from users.models import User
 
 
 class UserCreationForm(forms.ModelForm):
@@ -98,9 +39,6 @@ class UserChangeForm(forms.ModelForm):
                   "this user's password, but you can change the password "
                   "using <a href=\"../password/\">this form</a>.")
 
-
-
-
     class Meta:
         model = User
         fields = '__all__'
@@ -115,25 +53,7 @@ class UserChangeForm(forms.ModelForm):
         return self.initial["password"]
 
 
-class UserFeedbackForm(forms.ModelForm):
 
-    class Meta:
-        model = UserFeedback
-        fields = ['message', 'message_polarity']
-
-    def clean(self):
-        form_data = self.cleaned_data
-        if (form_data['message'] == ""):
-            self._errors['message'] = self.error_class(
-                ["Cannot submit a blank message"])
-
-        return form_data
-
-    def __init__(self, *args, **kwargs):
-        super(UserFeedbackForm, self).__init__(*args, **kwargs)
-
-        self.fields['message'].widget = forms.Textarea(
-            attrs={'placeholder': 'Enter Your Message Here.'})
 
 
 

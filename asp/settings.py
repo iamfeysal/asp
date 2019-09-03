@@ -44,21 +44,32 @@ INSTALLED_APPS = [
     'django_filters',
     'django_countries',
     'corsheaders',
+    'django_extensions',
     'authentication.apps.UsersConfig',
+    'profiles.apps.ProfilesConfig',
+    'commands.apps.CommandsConfig',
+    'users.apps.UsersConfig',
 
 ]
 
+# REST_FRAMEWORK = {
+#     'DEFAULT_PERMISSION_CLASSES':(
+#         # 'rest_framework.permissions.IsAuthenticated',
+#         'rest_framework.permissions.IsAuthenticated',
+#         # 'authentication.permissions.SuPermission',
+# 
+#     )
+# }
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES':(
-        # 'rest_framework.permissions.IsAuthenticated',
-        'rest_framework.permissions.AllowAny',
-        # 'authentication.permissions.SuPermission',
-
-    )
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny', )
 }
 
 
-AUTH_USER_MODEL = 'authentication.User'
+AUTH_USER_MODEL = 'users.User'
 # 
 # LOGIN_REDIRECT_URL = 'home'
 # LOGOUT_REDIRECT_URL = 'home'
