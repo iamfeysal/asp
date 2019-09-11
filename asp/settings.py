@@ -57,7 +57,7 @@ INSTALLED_APPS = [
 #         # 'rest_framework.permissions.IsAuthenticated',
 #         'rest_framework.permissions.IsAuthenticated',
 #         # 'authentication.permissions.SuPermission',
-# 
+#
 #     )
 # }
 REST_FRAMEWORK = {
@@ -70,11 +70,12 @@ REST_FRAMEWORK = {
 
 
 AUTH_USER_MODEL = 'users.User'
-# 
+#
 # LOGIN_REDIRECT_URL = 'home'
 # LOGOUT_REDIRECT_URL = 'home'
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -185,3 +186,8 @@ EMAIL_HOST_USER='iamfeysal@gmail.com'
 EMAIL_HOST_PASSWORD='fumzrnzrlezfgryl'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
+
+
+
+#  Add configuration for static files storage using whitenoise
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
