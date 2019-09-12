@@ -32,7 +32,10 @@ ndg-httpsclient==0.5.1
 oauthlib==3.1.0
 packaging==19.1
 Pillow==6.1.0
+pkg-resources==0.0.0
 pluggy==0.12.0
+psycopg2==2.8.3
+psycopg2-binary==2.8.3
 py==1.8.0
 pyasn1==0.4.6
 pycparser==2.19
