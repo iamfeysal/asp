@@ -121,7 +121,13 @@ WSGI_APPLICATION = 'asp.wsgi.application'
 #     }
 # }
 
-DATABASES = {default': dj_database_url.config()}
+# DATABASES = {default': dj_database_url.config()}
+
+DATABASES = {
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
+}
 
 DATABASES = {
     'default': {
