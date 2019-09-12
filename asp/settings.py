@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '7sd(vgfz-^bf5t%#dw7sg!tjg%pctbw_&^ghw8wf+3%mxy0-(o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_countries',
     'corsheaders',
     'django_extensions',
+    'whitenoise.runserver_nostatic',
     'authentication.apps.UsersConfig',
     'profiles.apps.ProfilesConfig',
     'commands.apps.CommandsConfig',
@@ -128,16 +129,28 @@ DATABASES = {
     )
 }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'asp',
-        'USER': 'root',
-        'PASSWORD': 'fazmandinho',
-        'HOST': 'localhost',
-        'PORT': '',
+if config('MODE')=="dev":
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'asp',
+            'USER': 'root',
+            'PASSWORD': 'fazmandinho',
+            'HOST': 'localhost',
+            'PORT': '',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=config('DATABASE_URL')
+        )
+    }
+
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
+
+
 
 
 # DEBUG = config('DEBUG', default=True, cast=bool)
