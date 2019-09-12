@@ -121,11 +121,7 @@ WSGI_APPLICATION = 'asp.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL')
-    )
-}
+DATABASES = {default': dj_database_url.config()}
 
 DATABASES = {
     'default': {
@@ -133,8 +129,8 @@ DATABASES = {
         'NAME': 'asp',
         'USER': 'root',
         'PASSWORD': 'fazmandinho',
-        'HOST': '127.0.0.1',
-        'PORT': '6122',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
