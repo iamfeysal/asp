@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '7sd(vgfz-^bf5t%#dw7sg!tjg%pctbw_&^ghw8wf+3%mxy0-(o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -121,17 +121,30 @@ WSGI_APPLICATION = 'asp.wsgi.application'
 #     }
 # }
 
-DEBUG = config('DEBUG', default=True, cast=bool)
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'asp',
+        'USER': 'root',
+        'PASSWORD': 'fazmandinho',
+        'HOST': 'localhost',
         'PORT': '',
     }
 }
+
+
+# DEBUG = config('DEBUG', default=True, cast=bool)
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': config('DB_NAME'),
+#         'USER': config('DB_USER'),
+#         'PASSWORD': config('DB_PASSWORD'),
+#         'HOST': config('DB_HOST'),
+#         'PORT': '',
+#     }
+# }
 
 
 # Password validation
