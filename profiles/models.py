@@ -34,8 +34,8 @@ class UserProfile(models.Model) :
     gender = models.CharField(max_length=1,
                               choices=GENDER_CHOICES, null=True)
     current_status = models.CharField(max_length=255,
-                                      help_text='free agent or playing for larriskos  fc',
-                                      blank=True, null=True)
+                                      help_text='free agent or playing for '
+                                                'larriskos  fc',blank=True, null=True)
     nickname = models.CharField(max_length=255, blank=True, null=True)
     bio = models.TextField(max_length=500, blank=True)
     location = models.CharField(max_length=30, blank=True)

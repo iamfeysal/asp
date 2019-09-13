@@ -2,12 +2,13 @@ from django.urls import path,re_path, include
 from rest_framework import routers
 from rest_framework.authtoken.views import obtain_auth_token
 
-from authentication.api.views import LoginView, LogoutView, ResetPasswordView, ConfirmResetPasswordView, \
-    ChangePasswordView
+from authentication.api.views import  UserViewSet,LoginView, LogoutView,\
+    ResetPasswordView, ConfirmResetPasswordView,  ChangePasswordView
 from rest_framework import routers
 from authentication.views import SignUp
 
 router = routers.DefaultRouter()
+router.register(r'createuser', UserViewSet)
 
 app_name = "authentication"
 
@@ -22,5 +23,6 @@ urlpatterns = [
             name='password_reset'),
     re_path(r'^password/resetconfirm$', ConfirmResetPasswordView.as_view(),
             name='password_reset_confirm'),
-    re_path(r'^password/change$', ChangePasswordView.as_view(), name='password_change'),
+    re_path(r'^password/change$', ChangePasswordView.as_view(),
+            name='password_change'),
 ]

@@ -4,18 +4,53 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.generics import GenericAPIView, UpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
+from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.models import PasswordResetRequest
-from authentication.api.serializers import LoginSerializer, TokenSerializer, ResetPasswordSerializer, \
-    ConfirmResetPasswordSerializer, ChangePasswordSerializer
+from authentication.api.serializers import LoginSerializer, TokenSerializer, \
+    ResetPasswordSerializer, ConfirmResetPasswordSerializer, \
+    ChangePasswordSerializer
+from users.api.serializers import UserSerializer
 from commands.helpers import send_email_for_password_reset, validate_string
 from commands.messages import send_email
 from commands.repositories import find_active_password_request
 from users.models import User
 
 
+class UserViewSet(viewsets.ModelViewSet):
+    """User ViewSet.
+
+    get:
+    List all users
+
+    put:
+    Create new user with the given validated data
+
+    """
+
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    authentication_classes = (TokenAuthentication,)
+    # permission_classes = (IsAuthenticated,)
+
+
+    def create(self, request):
+        print('hit create view')
+        """
+        Create user with validated data from the serializer class
+        """
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            print(serializer.is_valid)
+            User.objects._create_user(**serializer.validated_data)
+            return Response(serializer.validated_data,
+                            status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginView(GenericAPIView) :
@@ -38,7 +73,9 @@ class LoginView(GenericAPIView) :
         print('login api views function')
         self.user = self.serializer.validated_data['user']
         # print(self.user)
-        self.token, created = self.token_model.objects.get_or_create(user=self.user)
+        self.token, created = self.token_model.objects.get_or_create(
+            user=self.user
+        )
         # print(self.token)
         if getattr(settings, 'REST_SESSION_LOGIN', True):
             login(self.request, self.user)

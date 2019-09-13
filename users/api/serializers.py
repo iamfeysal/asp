@@ -38,8 +38,8 @@ class UserSerializer(serializers.ModelSerializer):
             "last_login", "followers_count","following_count",
              "userprofile", "skills",  'password', )
 
-        # read_only_fields = ('date_joined', "password", 'last_login', 'userprofile')
-        # extra_kwargs = {'password' : {'write_only' : True, 'required' : True}, }
+# read_only_fields = ('date_joined', "password", 'last_login', 'userprofile')
+# extra_kwargs = {'password' : {'write_only' : True, 'required' : True}, }
         
         def create(self, validated_data):
             """ Create user using given validated fields """

@@ -19,6 +19,8 @@ django-filter==2.2.0
 djangorestframework==3.10.2
 djangorestframework-jwt==1.11.0
 djangorestframework-simplejwt==4.3.0
+entrypoints==0.3
+flake8==3.7.8
 graphviz==0.12
 gunicorn==19.9.0
 idna==2.8
@@ -37,7 +39,9 @@ psycopg2==2.8.3
 psycopg2-binary==2.8.3
 py==1.8.0
 pyasn1==0.4.6
+pycodestyle==2.5.0
 pycparser==2.19
+pyflakes==2.1.1
 PyJWT==1.7.1
 pylint==2.3.1
 pylint-plugin-utils==0.5
