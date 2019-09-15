@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="aca05f88-6381-4fff-8f2c-b381cfc72728" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/asp/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/asp/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/admin.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -96,7 +97,9 @@
       <workItem from="1568223369156" duration="2174000" />
       <workItem from="1568298329622" duration="1514000" />
       <workItem from="1568321126709" duration="729000" />
-      <workItem from="1568329948352" duration="5591000" />
+      <workItem from="1568329948352" duration="6390000" />
+      <workItem from="1568378376372" duration="556000" />
+      <workItem from="1568411189717" duration="3267000" />
     </task>
     <servers />
   </component>

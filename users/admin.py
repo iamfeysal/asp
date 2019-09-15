@@ -41,7 +41,7 @@ class MyUserAdmin(auth_admin.UserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
     model = User
-    list_display = ('email', "first_name", "last_name", "username",
+    list_display = ('avatar','email', "first_name", "last_name", "username",
                     'is_player', 'is_coach', 
                      'date_joined','is_admin', 'is_active', 'is_staff', 'is_superuser',
                     'last_login')  #

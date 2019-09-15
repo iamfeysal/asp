@@ -46,12 +46,23 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_extensions',
     'whitenoise.runserver_nostatic',
+    'django_jenkins',
     'authentication.apps.UsersConfig',
     'profiles.apps.ProfilesConfig',
     'commands.apps.CommandsConfig',
     'users.apps.UsersConfig',
 
 ]
+PROJECT_APPS = (
+    'authentication.apps.UsersConfig',
+    'profiles.apps.ProfilesConfig',
+    'commands.apps.CommandsConfig',
+    'users.apps.UsersConfig',
+)
+JENKINS_TASKS = (
+    'django_jenkins.tasks.run_pep8',
+    'django_jenkins.tasks.run_pyflakes',
+)
 
 # REST_FRAMEWORK = {
 #     'DEFAULT_PERMISSION_CLASSES':(
