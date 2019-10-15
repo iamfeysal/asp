@@ -4,6 +4,7 @@
     <list default="true" id="aca05f88-6381-4fff-8f2c-b381cfc72728" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/requirements/local.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements/production.txt" afterDir="false" />
+
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
