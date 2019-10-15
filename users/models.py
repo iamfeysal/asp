@@ -16,7 +16,8 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
 from asp.config.settings.local import AUTH_USER_MODEL
-from users.users_managers import UserManager
+from users.users_managers import UserManager, PlayerManager
+from team.models import Team
 
 
 class Skill(models.Model) :
@@ -185,6 +186,8 @@ class User(AbstractBaseUser):
     @property
     def following_count(self) :
         return self.following.all().count()
+
+
 
 
 class UserFeedback(models.Model):
