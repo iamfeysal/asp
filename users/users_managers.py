@@ -1,7 +1,8 @@
 from django.contrib.auth.base_user import BaseUserManager
+from   django.db import models
 
 
-class UserManager(BaseUserManager) :
+class UserManager(BaseUserManager):
     """Create user given email and password"""
 
     def _create_user(self, email, password, **extra_fields):
@@ -43,3 +44,17 @@ class UserManager(BaseUserManager) :
             raise ValueError('Staff must have is_staff=True.')
 
         return self._create_user(email, password, **extra_fields)
+
+
+class PlayerManager(models.Manager):
+    use_for_related_fields = True
+
+    def add_player(self, user, team):
+        pass
+
+    def remove_player(self, user, team):
+        pass
+
+
+    def trasnfer_player(self, user, team):
+        pass

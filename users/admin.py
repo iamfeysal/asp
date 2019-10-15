@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from authentication.forms import UserChangeForm, UserCreationForm
 from profiles.models import UserProfile
 from users.models import Skill, User, UserFeedback,Notification
+from team.models import Team, Player
 from django.contrib import admin
 
 
@@ -24,8 +25,14 @@ class UserProfileInline(admin.StackedInline) :
     can_delete = False
 
 
+admin.site.register(Player)
+class PlayerAdmin(admin.StackedInline):
+    # list_display = ['player_name']
+    model = Player
 
-
+admin.site.register(Team)
+class TeamAdmin(admin.StackedInline):
+    model = Team
 
 class UserFeedbackInline(admin.StackedInline):
     model = UserFeedback
@@ -156,6 +163,7 @@ class NotificationAdmin(admin.ModelAdmin):
     
     
 # admin.site.unregister(User)
-admin.site.register(User, MyUserAdmin,)
-admin.site.register(Skill, )
+admin.site.register(User,  MyUserAdmin,)
+admin.site.register(Skill)
 admin.site.register(UserFeedback)
+

@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser
 from rest_framework.authtoken.models import Token
 from django.utils import timezone
 
-from users.models import User
+from asp.config.settings.local import AUTH_USER_MODEL
 
 
 class PasswordResetRequest(models.Model):
@@ -24,7 +24,7 @@ class PasswordResetRequest(models.Model):
 
     uuid = models.CharField(max_length=48)
     token = models.CharField(max_length=128)
-    reset_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    reset_user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
     expiry_date = models.DateTimeField()
     is_active = models.BooleanField(default=True)
 

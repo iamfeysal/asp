@@ -23,7 +23,8 @@ media
 .idea/**/gradle.xml
 .idea/**/libraries
 .idea/workspace.xml
-.idea
+.idea/workspace.xml
+.idea/
 *.iws /out/
 
 # Python #
@@ -80,8 +81,9 @@ celerybeat-schedule.*
 # Environments
 .env
 .venv
+.env/
 env/
-venv/
+.venv/
 ENV/
 env.bak/
 venv.bak/
