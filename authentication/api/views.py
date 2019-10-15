@@ -17,6 +17,8 @@ from users.api.serializers import UserSerializer
 from commands.helpers import send_email_for_password_reset, validate_string
 from commands.messages import send_email
 from commands.repositories import find_active_password_request
+from django.template.loader import get_template
+from django.core.mail import send_mail
 from users.models import User
 
 
@@ -45,11 +47,32 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
-            print(serializer.is_valid)
+            # print(serializer.is_valid)
             User.objects._create_user(**serializer.validated_data)
+            nickname = serializer.data['email']
+            print(nickname)
+            recipient = [serializer.data['email']]
+            print(recipient)
+            email_subject = 'DUENDE FOOTBALL - Confirmation Profile Activation'
+            print(email_subject)
+            message = get_template('registration/email_signup.html').render(
+                {
+                    'nickname': nickname,
+                }
+            )
+            print(message)
+
+            send_mail(email_subject,
+                      message,
+                      'iamfeysal@gmail.com',
+                      recipient,
+                      fail_silently=False,
+                      html_message=message,
+                      )
+            print(send_mail)
+
             return Response(serializer.validated_data,
                             status=status.HTTP_201_CREATED)
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

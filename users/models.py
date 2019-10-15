@@ -1,5 +1,4 @@
 import itertools
-import uuid
 from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.core import validators
@@ -16,7 +15,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
-from asp.settings import AUTH_USER_MODEL
+from asp.config.settings.local import AUTH_USER_MODEL
 from users.users_managers import UserManager
 
 
@@ -32,7 +31,19 @@ class Skill(models.Model) :
 
     def __str__(self) :
         return self.name
+POSITION_CHOICES = (
+    (0, "Keeper"),
+    (1, "Defence"),
+    (2, "Midfield"),
+    (3, "Attack")
+)
 
+MEMBERSHIP_CHOICES = (
+    (0, "banned"),
+    (1, "member"),
+    (2, "moderator"),
+    (3, "admin")
+)
 
 class User(AbstractBaseUser):
     username = models.SlugField(_('username'), max_length=50, unique=True,
@@ -68,19 +79,16 @@ class User(AbstractBaseUser):
                                        related_name="followers_set")
     following = models.ManyToManyField("self", blank=True, symmetrical=False,
                                        related_name="following_set")
+    role = models.IntegerField(choices=MEMBERSHIP_CHOICES, default=1)
+    position = models.IntegerField(choices=POSITION_CHOICES, default=1)
+
+
     
     
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
     objects = UserManager()
-
-    class Meta :
-        permissions = (
-            ("viw_user", "view user"),
-            ("ad_user", "Add user"),
-            ("dlt_user", "Delete user"),
-        )
         
         
     @property

@@ -8,7 +8,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django_countries.fields import CountryField
 
-from asp.settings import AUTH_USER_MODEL
+from asp.config.settings.local import AUTH_USER_MODEL
+
 
 
 class UserProfile(models.Model) :
