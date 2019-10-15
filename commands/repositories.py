@@ -1,8 +1,6 @@
 """
 repositories
 """
-from asp.settings import AUTH_USER_MODEL
-import random
 import uuid
 from datetime import timedelta
 from hashlib import sha512

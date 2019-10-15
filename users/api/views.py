@@ -76,8 +76,7 @@ class Notifications(APIView):
     def get(self, request, format=None) :
         user = request.user
         notifications = Notification.objects.filter(to=user)
-        serializer = NotificationSerializer(notifications,
-                                                        many=True)
+        serializer = NotificationSerializer(notifications, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
@@ -110,7 +109,7 @@ class ExplorePlayers(APIView) :
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
-class FollowUser(APIView) :
+class FollowUser(APIView):
     def post(self, request, user_id, format=None) :
         user = request.user
 
@@ -127,7 +126,7 @@ class FollowUser(APIView) :
         return Response(status=status.HTTP_200_OK)
 
 
-class UnFollowUser(APIView) :
+class UnFollowUser(APIView):
     def put(self, request, user_id, format=None) :
         user = request.user
 
