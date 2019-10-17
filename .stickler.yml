@@ -10,3 +10,15 @@ files:
     ignore:
         - 'src/generated/*'
         - 'webroot/bower_components/*'
+
+
+branches:
+    # Ignore pull requests to the named branches
+    ignore:
+        - 'wip'
+        - 'feedback'
+
+review:
+    # Don't use 'failure' build status when
+    # a pull request contains style errors.
+    fail_on_comments: false
