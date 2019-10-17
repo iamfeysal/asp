@@ -18,7 +18,7 @@ def send_email_for_password_reset(request,email):
              "for the email %s which does not exist on our system.")
             % (email),
             [email],
-            from_email='iamfeysal@gmail',
+            from_email='iamfeysal@gmail.com',
             fail_silently=False,
         )
         return False
@@ -37,7 +37,7 @@ def send_email_for_password_reset(request,email):
         'Password Reset:ASP',
         '',
         [email],
-        from_email='iamfeysal@gmail',
+        from_email='iamfeysal@gmail.com',
         html_message=message,
         fail_silently=False,
     )

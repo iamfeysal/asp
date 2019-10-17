@@ -26,7 +26,7 @@ def send_email(subject, message, recipient_list=None, **kwargs):
                 subject, message, from_email, recipient_list,
                 html_message=html_message, **kwargs
             )
-            print(response)
+            # print(response)
             return response
         except BadHeaderError as err :
             LOGGER.exception(err)

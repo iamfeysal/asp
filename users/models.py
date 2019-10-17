@@ -119,7 +119,9 @@ class User(AbstractBaseUser):
     
     def save(self, force_insert=False, force_update=False,
              using=None, update_fields=None):
-        """Override save model."""
+        """Override save model.
+         save email or last name as username if it is null else saves the
+         username"""
         if not self.username:
             max_length = self.__class__._meta.get_field('username').max_length
             self.username = orig = slugify(
