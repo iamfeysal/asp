@@ -158,11 +158,11 @@ class LogoutView(APIView):
 
 
 class ResetPasswordView(GenericAPIView):
-    """Reser Password View.
+    """Reset Password View.
 
     Resets user's password
     post:
-    Takes ``phone`` request field and,
+    Takes ``phone or email`` request field and,
     Returns either ``success`` or ``failed``
     """
 
