@@ -162,10 +162,12 @@ class User(AbstractBaseUser):
     def make_player(self, email):
         user = User.objects.get(email=email)
         user.is_player = True
+        user.save()
 
     def make_coach(self, email):
         user = User.objects.get(email=email)
         user.is_coach = True
+        user.save()
 
     def pre_save_listener(sender, instance, *args, **kwargs):
         if instance.is_player:
