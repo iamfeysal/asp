@@ -4,11 +4,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 import users
-from users.api.serializers import  UserFeedbackSerializer, UserSerializer
+from users.api.serializers import UserFeedbackSerializer, UserSerializer
 from users.models import User, Notification, UserFeedback
 from users.api.serializers import NotificationSerializer
 
-# 
+
+#
 # class ListUsersView(viewsets.ModelViewSet):
 #     
 #     # print('hit list user view')
@@ -27,7 +28,7 @@ from users.api.serializers import NotificationSerializer
 #             serializer.save()
 #             return Response(serializer.data, status=status.HTTP_201_CREATED)
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 
 # class UserViewSet(viewsets.ModelViewSet):
 #     """User ViewSet.
@@ -62,7 +63,7 @@ from users.api.serializers import NotificationSerializer
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserFeedbackViewSet(viewsets.ModelViewSet) :
+class UserFeedbackViewSet(viewsets.ModelViewSet):
     """
     Lists user feedbacks
     """
@@ -73,7 +74,7 @@ class UserFeedbackViewSet(viewsets.ModelViewSet) :
 
 
 class Notifications(APIView):
-    def get(self, request, format=None) :
+    def get(self, request, format=None):
         user = request.user
         notifications = Notification.objects.filter(to=user)
         serializer = NotificationSerializer(notifications, many=True)
@@ -81,7 +82,7 @@ class Notifications(APIView):
 
 
 def create_notification(creator, to, notification_type, image=None,
-                        comment=None) :
+                        comment=None):
     notifiation = Notification.objects.create(
         creator=creator,
         to=to,
@@ -90,9 +91,9 @@ def create_notification(creator, to, notification_type, image=None,
     notifiation.save()
 
 
-class ExploreCoaches(APIView) :
+class ExploreCoaches(APIView):
 
-    def get(self, request, fomrat=None) :
+    def get(self, request, fomrat=None):
         last_five = User.objects.filter(is_coach=True)
 
         serializer = UserSerializer(last_five, many=True)
@@ -100,9 +101,9 @@ class ExploreCoaches(APIView) :
 
 
 # Url : path("explore/", view=views.ExploreUsers.as_view(), name="explore_users")
-class ExplorePlayers(APIView) :
+class ExplorePlayers(APIView):
 
-    def get(self, request, fomrat=None) :
+    def get(self, request, fomrat=None):
         last_five = User.objects.filter(is_player=True)
 
         serializer = UserSerializer(last_five, many=True)
@@ -110,12 +111,12 @@ class ExplorePlayers(APIView) :
 
 
 class FollowUser(APIView):
-    def post(self, request, user_id, format=None) :
+    def post(self, request, user_id, format=None):
         user = request.user
 
-        try :
+        try:
             user_to_follow = users.models.User.objects.get(id=user_id)
-        except users.models.User.DoesNotExist :
+        except users.models.User.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         user.following.add(user_to_follow)
@@ -127,12 +128,12 @@ class FollowUser(APIView):
 
 
 class UnFollowUser(APIView):
-    def put(self, request, user_id, format=None) :
+    def put(self, request, user_id, format=None):
         user = request.user
 
-        try :
+        try:
             user_to_follow = users.models.User.objects.get(id=user_id)
-        except users.models.User.DoesNotExist :
+        except users.models.User.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         user.following.remove(user_to_follow)
@@ -141,17 +142,17 @@ class UnFollowUser(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class UserFollowers(APIView) :
-    def get(self, request, first_name, format=None) :
-        try :
+class UserFollowers(APIView):
+    def get(self, request, first_name, format=None):
+        try:
             found_user = users.models.User.objects.get(first_name=first_name)
             print(found_user)
-        except users.models.User.DoesNotExist :
+        except users.models.User.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        if found_user.userprofile == True :
+        if found_user.userprofile == True:
             user_followers = found_user.userprofile.followers.all()
             print(user_followers)
-        else :
+        else:
             user_followers = found_user.followers.all()
             print("no user profile for followers", user_followers)
         serializer = UserSerializer(user_followers, many=True)
@@ -159,16 +160,16 @@ class UserFollowers(APIView) :
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
-class UserFollowing(APIView) :
-    def get(self, request, first_name, format=None) :
-        try :
+class UserFollowing(APIView):
+    def get(self, request, first_name, format=None):
+        try:
             found_user = users.models.User.objects.get(first_name=first_name)
-        except users.models.User.DoesNotExist :
+        except users.models.User.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        if found_user.userprofile == True :
+        if found_user.userprofile == True:
             user_following = found_user.following.all()
             print(user_following)
-        else :
+        else:
             user_following = found_user.followers.all()
             print("no user profile for following", user_following)
         serializer = UserSerializer(user_following, many=True)
@@ -176,14 +177,14 @@ class UserFollowing(APIView) :
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
-class Search(APIView) :
-    def get(self, request, format=None) :
+class Search(APIView):
+    def get(self, request, format=None):
         email = request.query_params.get('email', None)
-        if email is not None :
+        if email is not None:
             users = User.objects.filter(
                 username__istartswith=email)
             serializer = UserSerializer(users, many=True)
 
             return Response(data=serializer.data, status=status.HTTP_200_OK)
-        else :
+        else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
