@@ -20,18 +20,20 @@ from users.users_managers import UserManager, PlayerManager
 from team.models import Team
 
 
-class Skill(models.Model) :
+class Skill(models.Model):
     name = models.CharField(max_length=50)
 
-    class Meta :
+    class Meta:
         permissions = (
             ("view_category", "view category"),
             ("add_category", "Add category"),
             ("delete_category", "Delete category"),
         )
 
-    def __str__(self) :
+    def __str__(self):
         return self.name
+
+
 POSITION_CHOICES = (
     (0, "Keeper"),
     (1, "Defence"),
@@ -46,6 +48,7 @@ MEMBERSHIP_CHOICES = (
     (3, "admin")
 )
 
+
 class User(AbstractBaseUser):
     username = models.SlugField(_('username'), max_length=50, unique=True,
                                 help_text=_('Required. 50 characters or fewer.'
@@ -58,8 +61,8 @@ class User(AbstractBaseUser):
                                       ' numbers and @/./+/-/_ characters.'),
                                     'invalid'), ],
                                 error_messages={
-                                    'unique' : _("A user with that"
-                                                 " username already exists."), }
+                                    'unique': _("A user with that"
+                                                " username already exists."), }
                                 )
     first_name = models.CharField(_('first name'), max_length=255, blank=True)
     last_name = models.CharField(_('last name'), max_length=100, blank=True)
@@ -68,7 +71,7 @@ class User(AbstractBaseUser):
                         default='avatars/default/user.png')
     date_joined = models.DateTimeField(verbose_name='date joined',
                                        auto_now_add=True)
-    is_player = models.BooleanField('player status', default=False)
+    is_player = models.BooleanField('player status', default=True)
     is_coach = models.BooleanField('coach status', default=False)
     last_login = models.DateTimeField(verbose_name='last login', auto_now=True)
     is_admin = models.BooleanField(default=False)
@@ -83,15 +86,11 @@ class User(AbstractBaseUser):
     role = models.IntegerField(choices=MEMBERSHIP_CHOICES, default=1)
     position = models.IntegerField(choices=POSITION_CHOICES, default=1)
 
-
-    
-    
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
     objects = UserManager()
-        
-        
+
     @property
     def full_name(self):
         """A longer formal identifier for the user.
@@ -113,10 +112,11 @@ class User(AbstractBaseUser):
         """Return user's profile picture (avatar)"""
         return self.avatar
 
-    def __str__(self) :
+    def __str__(self):
         """String Representation."""
-        return "{} {}".format(self.first_name, self.last_name)
-    
+        # return "{} {}".format(self.first_name, self.last_name)
+        return self.email
+
     def save(self, force_insert=False, force_update=False,
              using=None, update_fields=None):
         """Override save model.
@@ -130,8 +130,8 @@ class User(AbstractBaseUser):
                 if not self.__class__.objects.filter(
                         username=self.username).exists():
                     break
-                self.username = "%s-%d" % (orig[:max_length -
-                                                len(str(x)) - 1], x)
+                self.username = "%s-%d" % (orig[:max_length - len(str(x)) - 1],
+                                           x)
         else:
             self.username = slugify(self.username)
 
@@ -145,33 +145,35 @@ class User(AbstractBaseUser):
     # Does this user have permission to view this app? (ALWAYS YES FOR
     # SIMPLICITY)
 
-    def has_module_perms(self, app_label) :
+    def has_module_perms(self, app_label):
         """
 
         :param app_label: 
         :return: 
         """
         return True
-    
 
     def email_user(self, subject='welcome', message='welcome',
-                   from_email='iamfeysal@gmail.com', **kwargs) :
+                   from_email='iamfeysal@gmail.com', **kwargs):
         print('hit email function')
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
         print(send_mail)
 
-   
-    def pre_save_listener(sender, instance, *args, **kwargs) :
-        if instance.is_player :
-            instance.is_coach = False
-        if instance.is_coach :
-            instance.is_player = False
+    # def pre_save_listener(sender, instance, *args, **kwargs):
+    #     if instance.is_player:
+    #         instance.is_coach = False
+    #     if instance.is_coach:
+    #         instance.is_player = False
+    #
+    # pre_save.connect(receiver=pre_save_listener, sender=AUTH_USER_MODEL)
 
-    pre_save.connect(receiver=pre_save_listener, sender=AUTH_USER_MODEL)
-    
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-    def create_auth_token(sender, instance=None, created=False, **kwargs) :
+    def update_player_status(sender, instance, **kwargs):
+        player = instance.is_player
+
+    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+    def create_auth_token(sender, instance=None, created=False, **kwargs):
         """Create Auth Token
 
         This code is triggered whenever a new user has been created
@@ -180,16 +182,13 @@ class User(AbstractBaseUser):
         if created:
             Token.objects.create(user=instance)
 
-
     @property
-    def followers_count(self) :
+    def followers_count(self):
         return self.followers.all().count()
 
     @property
-    def following_count(self) :
+    def following_count(self):
         return self.following.all().count()
-
-
 
 
 class UserFeedback(models.Model):
@@ -215,7 +214,7 @@ class UserFeedback(models.Model):
     )
 
     user = models.ForeignKey(AUTH_USER_MODEL, blank=True, null=True,
-                              on_delete=models.CASCADE)
+                             on_delete=models.CASCADE)
     message = models.TextField(null=True, blank=True)
     date_submitted = models.DateTimeField(null=True)
     message_polarity = models.CharField(max_length=50, blank=True, null=True,
@@ -223,7 +222,7 @@ class UserFeedback(models.Model):
                                         default="undefined")
 
 
-class Notification(models.Model) :
+class Notification(models.Model):
     TYPE_CHOICES = (
         ('like', 'Like'),  # first for DB, second for Admin pannel
         ('comment', 'Comment'),
@@ -236,8 +235,8 @@ class Notification(models.Model) :
                            related_name='to')
     notification_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
 
-    class Meta :
+    class Meta:
         ordering = ['-notification_type']
 
-    def __str__(self) :
+    def __str__(self):
         return 'From : {} - To : {}'.format(self.creator, self.to)

@@ -11,8 +11,7 @@ from django_countries.fields import CountryField
 from asp.config.settings.local import AUTH_USER_MODEL
 
 
-
-class UserProfile(models.Model) :
+class UserProfile(models.Model):
     GENDER_CHOICES = (
         ('m', 'Male'),
         ('f', 'Female'),
@@ -36,20 +35,21 @@ class UserProfile(models.Model) :
                               choices=GENDER_CHOICES, null=True)
     current_status = models.CharField(max_length=255,
                                       help_text='free agent or playing for '
-                                                'larriskos  fc',blank=True, null=True)
+                                                'larriskos  fc', blank=True,
+                                      null=True)
     nickname = models.CharField(max_length=255, blank=True, null=True)
     bio = models.TextField(max_length=500, blank=True)
     location = models.CharField(max_length=30, blank=True)
-    
-    class Meta :
+
+    class Meta:
         permissions = (
             ("view_profile", "view profile"),
             ("add_profile", "Add profile"),
             ("delete_profile", "Delete profile"),
         )
-        
+
     def __str__(self):
-        return  " @ " + str(self.nickname)
+        return " @ " + str(self.nickname)
 
     def age(self):
         if self.birth_date is None:
@@ -58,9 +58,8 @@ class UserProfile(models.Model) :
             # handle age when birth_date is not null
             return int((datetime.now().date() - self.birth_date).days / 365.25)
 
-
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-    def update_user_profile(sender, instance, created, **kwargs) :
+    def update_user_profile(sender, instance, created, **kwargs):
         if created:
             UserProfile.objects.create(user=instance)
             instance.userprofile.save()

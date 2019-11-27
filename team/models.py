@@ -3,6 +3,7 @@ from asp.config.settings.local import AUTH_USER_MODEL
 # from users.models import User
 from users.users_managers import PlayerManager
 
+
 # Create your models here.
 
 
@@ -19,10 +20,10 @@ class Team(models.Model):
 class Player(models.Model):
     user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
+
     # other_fields =
 
     def __str__(self):
         return str(self.user) if self.user else ''
-
 
     objects = PlayerManager()
