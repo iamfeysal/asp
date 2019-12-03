@@ -53,7 +53,8 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'posts.apps.PostsConfig',
     'events.apps.EventsConfig',
-    'team.apps.TeamConfig'
+    'team.apps.TeamConfig',
+    'requestgame.apps.RequestgameConfig'
 
 ]
 PROJECT_APPS = (
