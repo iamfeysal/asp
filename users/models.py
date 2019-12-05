@@ -71,7 +71,7 @@ class User(AbstractBaseUser):
                         default='avatars/default/user.png')
     date_joined = models.DateTimeField(verbose_name='date joined',
                                        auto_now_add=True)
-    is_player = models.BooleanField('player status', default=False)
+    is_player = models.BooleanField('player status', default=True)
     is_coach = models.BooleanField('coach status', default=False)
     last_login = models.DateTimeField(verbose_name='last login', auto_now=True)
     is_admin = models.BooleanField(default=False)
@@ -114,6 +114,7 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         """String Representation."""
+
         return self.email
 
     def save(self, force_insert=False, force_update=False,
@@ -129,8 +130,8 @@ class User(AbstractBaseUser):
                 if not self.__class__.objects.filter(
                         username=self.username).exists():
                     break
-                self.username = "%s-%d" % (orig[:max_length -
-                                                 len(str(x)) - 1], x)
+                self.username = "%s-%d" % (orig[:max_length - len(str(x)) - 1],
+                                           x)
         else:
             self.username = slugify(self.username)
 
@@ -159,6 +160,8 @@ class User(AbstractBaseUser):
         send_mail(subject, message, from_email, [self.email], **kwargs)
         print(send_mail)
 
+
+    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def make_player(self, email):
         user = User.objects.get(email=email)
         user.is_player = True

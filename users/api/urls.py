@@ -4,8 +4,8 @@ from rest_framework.authtoken.views import obtain_auth_token
 
 from rest_framework import routers
 
-from users.api.views import UserFeedbackViewSet, ExploreCoaches, ExplorePlayers, \
-    FollowUser, UnFollowUser, UserFollowers, UserFollowing
+from users.api.views import UserFeedbackViewSet, ExploreCoaches, \
+    ExplorePlayers, FollowUser, UnFollowUser, UserFollowers, UserFollowing
 
 router = routers.DefaultRouter()
 router.register(r'feedback', UserFeedbackViewSet)
@@ -13,7 +13,6 @@ router.register(r'feedback', UserFeedbackViewSet)
 # router.register(r'messagetemplate', CreateMessageTemplateViewSet)
 # router.register(r'mailalerts', MailAlertsViewSet)
 # router.register(r'mailsubscription', MailSubscriptionViewSet)
-
 
 
 # app_name = "authentication"

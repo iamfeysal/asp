@@ -100,7 +100,7 @@ class ExploreCoaches(APIView):
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
-# Url : path("explore/", view=views.ExploreUsers.as_view(), name="explore_users")
+
 class ExplorePlayers(APIView):
 
     def get(self, request, fomrat=None):
@@ -164,9 +164,10 @@ class UserFollowing(APIView):
     def get(self, request, first_name, format=None):
         try:
             found_user = users.models.User.objects.get(first_name=first_name)
+            print(found_user)
         except users.models.User.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        if found_user.userprofile == True:
+        if found_user.userprofile is True:
             user_following = found_user.following.all()
             print(user_following)
         else:

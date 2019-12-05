@@ -36,8 +36,8 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     authentication_classes = (TokenAuthentication,)
-    # permission_classes = (IsAuthenticated,)
 
+    # permission_classes = (IsAuthenticated,)
 
     def create(self, request):
         print('hit create view')
@@ -76,7 +76,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class LoginView(GenericAPIView) :
+class LoginView(GenericAPIView):
     """Login View.
 
     post:
@@ -92,7 +92,7 @@ class LoginView(GenericAPIView) :
     token_model = Token
     response_serializer = TokenSerializer
 
-    def login(self) :
+    def login(self):
         print('login api views function')
         self.user = self.serializer.validated_data['user']
         # print(self.user)
@@ -105,18 +105,18 @@ class LoginView(GenericAPIView) :
 
     def get_response(self):
         print('response function')
-        resp_dict = {'key' : self.response_serializer(
-            self.token).data['key'], 'is_staff' : self.user.is_staff}
+        resp_dict = {'key': self.response_serializer(
+            self.token).data['key'], 'is_staff': self.user.is_staff}
         print(resp_dict)
         return Response(resp_dict, status=status.HTTP_200_OK)
 
-    def get_error_response(self) :
+    def get_error_response(self):
         return Response(
             self.serializer.errors, status=status.HTTP_401_UNAUTHORIZED
             # HTTP_400_BAD_REQUEST
         )
 
-    def post(self, request, *args, **kwargs) :
+    def post(self, request, *args, **kwargs):
         print('post request of auth api')
         self.serializer = self.get_serializer(data=self.request.data)
         if self.serializer.is_valid():
@@ -147,13 +147,13 @@ class LogoutView(APIView):
     Accepts/Returns nothing.
     """
 
-    def post(self, request) :
-        try :
+    def post(self, request):
+        try:
             request.user.auth_token.delete()
-        except Exception :
+        except Exception:
             pass
         logout(request)
-        return Response({"success" : "Successfully logged out."},
+        return Response({"success": "Successfully logged out."},
                         status=status.HTTP_200_OK)
 
 
@@ -169,18 +169,18 @@ class ResetPasswordView(GenericAPIView):
     serializer_class = ResetPasswordSerializer
     permission_classes = (AllowAny,)
 
-    def post(self, request, *args, **kwargs) :
+    def post(self, request, *args, **kwargs):
         # fetch submitted data
         reset_status, token, uuid = \
             send_email_for_password_reset(request, request.data['email'])
 
-        if token :
+        if token:
             resp_status = status.HTTP_200_OK
-        else :
+        else:
             resp_status = status.HTTP_400_BAD_REQUEST
 
         return Response(
-            {"status" : reset_status, "uuid" : uuid},
+            {"status": reset_status, "uuid": uuid},
             status=resp_status)
 
 
@@ -292,25 +292,25 @@ class ChangePasswordView(UpdateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ChangePassword(APIView) :
+class ChangePassword(APIView):
     def put(self, request, email, format=None):
         user = request.user
 
-        if user.email == email :
+        if user.email == email:
             current_password = request.data.get('current_password', None)
-            if current_password is not None :
+            if current_password is not None:
                 passwords_match = user.check_password(current_password)
-                if passwords_match :
+                if passwords_match:
                     new_password = request.data.get('new_password', None)
-                    if new_password is not None :
+                    if new_password is not None:
                         user.set_password(new_password)
                         user.save()
                         return Response(status=status.HTTP_200_OK)
-                    else :
+                    else:
                         return Response(status=status.HTTP_400_BAD_REQUEST)
-                else :
+                else:
                     return Response(status=status.HTTP_400_BAD_REQUEST)
-            else :
+            else:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
-        else :
+        else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
