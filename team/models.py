@@ -12,6 +12,7 @@ class Team(models.Model):
     description = models.TextField(max_length=1024)
     logo = models.ImageField()
     players = models.ManyToManyField(AUTH_USER_MODEL, through='Player')
+    slug = models.SlugField(db_index=True, max_length=255, unique=True, null=True)
 
     def __str__(self):
         return self.name
