@@ -1,1 +1,1 @@
-web: gunicorn asp.wsgi --log-file -
+web: gunicorn asp.wsgi
