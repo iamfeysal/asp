@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '7sd(vgfz-^bf5t%#dw7sg!tjg%pctbw_&^ghw8wf+3%mxy0-(o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # ALLOWED_HOSTS = ['*']
 ALLOWED_HOSTS = ['asp.football.herokuapp.com']
