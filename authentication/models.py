@@ -28,9 +28,9 @@ class PasswordResetRequest(models.Model):
     expiry_date = models.DateTimeField()
     is_active = models.BooleanField(default=True)
 
-    def has_expired(self) :
+    def has_expired(self):
         """Check whether is past expiry data"""
-        if timezone.now() > self.expiry_date :
+        if timezone.now() > self.expiry_date:
             self.is_active = False
             self.save()
             return True

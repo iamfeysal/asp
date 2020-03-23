@@ -23,7 +23,8 @@ SECRET_KEY = '7sd(vgfz-^bf5t%#dw7sg!tjg%pctbw_&^ghw8wf+3%mxy0-(o'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['asp.football.herokuapp.com']
 
 # Application definition
 
@@ -62,6 +63,7 @@ JENKINS_TASKS = (
     'django_jenkins.tasks.run_pep8',
     'django_jenkins.tasks.run_pyflakes',
 )
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 # REST_FRAMEWORK = {
 #     'DEFAULT_PERMISSION_CLASSES':(
@@ -87,6 +89,7 @@ AUTH_USER_MODEL = 'users.User'
 MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -184,9 +187,14 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static_in_env')]
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static_in_env')]
 STATIC_ROOT = os.path.join(BASE_DIR, '../../static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Extra places for collectstatic to find static files.
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
@@ -198,3 +206,4 @@ EMAIL_HOST_USER = 'iamfeysal@gmail.com'
 EMAIL_HOST_PASSWORD = 'fumzrnzrlezfgryl'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
+

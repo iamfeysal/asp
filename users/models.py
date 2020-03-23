@@ -118,7 +118,7 @@ class User(AbstractBaseUser):
         return self.email
 
     def save(self, force_insert=False, force_update=False,
-             using=None, update_fields=None):
+             using=None, update_fields=None, ):
         """Override save model.
          save email or last name as username if it is null else saves the
          username"""
@@ -160,17 +160,16 @@ class User(AbstractBaseUser):
         send_mail(subject, message, from_email, [self.email], **kwargs)
         print(send_mail)
 
-
-    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-    def make_player(self, email):
-        user = User.objects.get(email=email)
-        user.is_player = True
-        user.save()
-
-    def make_coach(self, email):
-        user = User.objects.get(email=email)
-        user.is_coach = True
-        user.save()
+    # @receiver(post_save, sender=settings.AUTH_USER_MODEL,)
+    # def make_player(self, email, **kwargs):
+    #     user = User.objects.get(email=email)
+    #     user.is_player = True
+    #     user.save()
+    #
+    # def make_coach(self, email, **kwargs):
+    #     user = User.objects.get(email=email)
+    #     user.is_coach = True
+    #     user.save()
 
     def pre_save_listener(sender, instance, *args, **kwargs):
         if instance.is_player:
@@ -178,7 +177,7 @@ class User(AbstractBaseUser):
         if instance.is_coach:
             instance.is_player = False
 
-    pre_save.connect(receiver=pre_save_listener, sender=AUTH_USER_MODEL)
+    pre_save.connect(receiver=pre_save_listener, sender=AUTH_USER_MODEL,)
 
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def create_auth_token(sender, instance=None, created=False, **kwargs):
@@ -248,4 +247,3 @@ class Notification(models.Model):
 
     def __str__(self):
         return 'From : {} - To : {}'.format(self.creator, self.to)
-

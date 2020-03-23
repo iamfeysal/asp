@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib.auth import login, logout
-from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.generics import GenericAPIView, UpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated

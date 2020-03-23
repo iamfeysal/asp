@@ -100,7 +100,6 @@ class ExploreCoaches(APIView):
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
-
 class ExplorePlayers(APIView):
 
     def get(self, request, fomrat=None):
