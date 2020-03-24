@@ -5,9 +5,8 @@ from profiles.api.views import ListUsersProfiles
 
 router = routers.DefaultRouter()
 
-router.register('',ListUsersProfiles)
+router.register('', ListUsersProfiles)
 
 urlpatterns = [
     re_path('', include(router.urls)),
 ]
-

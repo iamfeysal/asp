@@ -15,9 +15,6 @@ router.register(r'feedback', UserFeedbackViewSet)
 # router.register(r'mailsubscription', MailSubscriptionViewSet)
 
 
-# app_name = "authentication"
-
-
 urlpatterns = [
     # path('sign_up', SignUp, name='sign_up'),
     re_path('', include(router.urls)),
