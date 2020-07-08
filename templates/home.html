@@ -4,18 +4,53 @@
 {% block content %}
     <div class="row mt-5" content="center">
         <div class="col-md-12 mb-5 text-center mt-5">
-          <h2>ASP API DOCUMENTATION</h2>
+          <h1>ASP API DOCUMENTATION</h1>
         </div>
         <div class="col-md-6 col-lg-3">
           <div class="block-38 text-center">
             <div class="block-38-img">
               <div class="block-38-header">
-{#                <img src="{% static 'images/teams/baha2.jpeg' %}" alt="ceo">#}
-                <h3 class="block-38-heading">Authentication</h3>
-                <p class="block-38-subheading">CEO</p>
+                <h2 class="block-38-heading">AUTHENTICATION</h2>
+                <p class="block-38-heading"><em>base_url=authentication
+                </em></p>
+                <h3 class="block-38-heading"></h3>
+                <h4 class="block-38-subheading">Create User</h4>
+                <div class="block-38-body">
+                <p>Create new user and see the list of users created</p><em>make
+                    sure you use valid email when creating user as you will
+                    receive activation email when you register
+                </em>
+                <p>url: <em>base_url/createuser</em> </p>
               </div>
-              <div class="block-38-body">
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae aut minima nihil sit distinctio recusandae doloribus ut fugit officia voluptate soluta. </p>
+                  <h4 class="block-38-subheading">Login</h4>
+                <div class="block-38-body">
+                <p>Login with email and password</p>
+                <p>url: <em>base_url/login</em> </p>
+              </div>
+                  <h4 class="block-38-subheading">Logout</h4>
+                <div class="block-38-body">
+                <p>url: <em>base_url/logout</em> </p>
+              </div>
+                  <h4 class="block-38-subheading">Password Reset</h4>
+                <div class="block-38-body">
+                <p>Put your phone or email and wait for an email or phone
+                    text message depending on the request you made</p>
+                <p>url: <em>base_url/password/reset</em> </p>
+              </div>
+                  <h4 class="block-38-subheading">Password Reset Confirm</h4>
+                <div class="block-38-body">
+                <p>After you initiated the password reset request, you will
+                    recive a response and you need to confirm the link sent
+                    eiter via email or phone text </p>
+                <p>url: <em>base_url/password/resetconfirm</em> </p>
+              </div>
+                  <h4 class="block-38-subheading">Password Change</h4>
+                <div class="block-38-body">
+                <p>After confirming the password reset link, you will need
+                    to change your password</p>
+                <p>url: <em>base_url/password/change</em> </p>
+              </div>
+              </div>
               </div>
             </div>
           </div>
@@ -24,10 +59,9 @@
           <div class="block-38 text-center">
             <div class="block-38-img">
               <div class="block-38-header">
-{#                <img src="{% static 'images/teams/nadia.jpeg' %}"#}
-{#                     alt="president">#}
-                <h3 class="block-38-heading">users</h3>
-                <p class="block-38-subheading">President</p>
+                <h2 class="block-38-heading">USERS</h2>
+                  <p class="block-38-heading"><em>base_url=authentication
+                </em></p>
               </div>
               <div class="block-38-body">
                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae aut minima nihil sit distinctio recusandae doloribus ut fugit officia voluptate soluta. </p>
@@ -41,7 +75,7 @@
               <div class="block-38-header">
 {#                <img src="{% static 'images/teams/farhan.jpeg' %}"#}
 {#                     alt="Operation manager">#}
-                <h3 class="block-38-heading">profiles</h3>
+                <h2 class="block-38-heading">profiles</h2>
                 <p class="block-38-subheading">Operational Manager</p>
               </div>
               <div class="block-38-body">
@@ -58,7 +92,7 @@
             <div class="block-38-img">
               <div class="block-38-header">
 {#                <img src="{% static 'images/teams/iamfeysal3.jpg' %}" alt="CTO">#}
-                <h3 class="block-38-heading">teams</h3>
+                <h2 class="block-38-heading">teams</h2>
                 <p class="block-38-subheading">Engineering Lead</p>
               </div>
               <div class="block-38-body">
