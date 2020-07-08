@@ -1,7 +1,4 @@
 from django.test import TestCase
-
-# Create your tests here.
-from django.test import TestCase
 from django.contrib.auth import get_user_model
 
 
@@ -10,7 +7,7 @@ class UsersManagersTests(TestCase):
     def test_create_user(self):
         User = get_user_model()
         user = User.objects.create_user(email='normal@user.com',
-                                        password='foo',)
+                                        password='foo', )
         self.assertEqual(user.email, 'normal@user.com')
         self.assertTrue(user.is_active)
         self.assertFalse(user.is_staff)
@@ -30,7 +27,7 @@ class UsersManagersTests(TestCase):
 
     def test_create_superuser(self):
         User = get_user_model()
-        admin_user = User.objects.create_superuser('test@test.com','password')
+        admin_user = User.objects.create_superuser('test@test.com', 'password')
         self.assertEqual(admin_user.email, 'test@test.com')
         self.assertTrue(admin_user.is_staff)
         self.assertTrue(admin_user.is_superuser)
