@@ -1,10 +1,10 @@
-from django.urls import path, re_path, include
+from django.urls import include, re_path
 from rest_framework import routers
 from rest_framework.authtoken.views import obtain_auth_token
 
-from authentication.api.views import UserViewSet, LoginView, LogoutView, \
-    ResetPasswordView, ConfirmResetPasswordView, ChangePasswordView
-from rest_framework import routers
+from authentication.api.views import ChangePasswordView, \
+    ConfirmResetPasswordView, LoginView, LogoutView, ResetPasswordView, \
+    UserViewSet
 
 router = routers.DefaultRouter()
 router.register(r'createuser', UserViewSet)
