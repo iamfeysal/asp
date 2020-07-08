@@ -11,6 +11,4 @@ urlpatterns = [
     path('teams/', include('team.urls')),
     # path('commands', include('commands.api.urls')),
 
-
-
 ]
