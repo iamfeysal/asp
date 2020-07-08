@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'whitenoise.runserver_nostatic',
     'django_jenkins',
-    'bootstrap4'
+    'bootstrap4',
     
     # my apps
     'authentication.apps.UsersConfig',
