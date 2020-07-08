@@ -65,7 +65,7 @@ from users.api.serializers import NotificationSerializer
 
 class UserFeedbackViewSet(viewsets.ModelViewSet):
     """
-    Lists user feedbacks
+            Lists user feedbacks
     """
 
     queryset = UserFeedback.objects.all()
@@ -74,6 +74,9 @@ class UserFeedbackViewSet(viewsets.ModelViewSet):
 
 
 class Notifications(APIView):
+    """
+            Notification view.
+    """
     def get(self, request, format=None):
         user = request.user
         notifications = Notification.objects.filter(to=user)
@@ -92,6 +95,9 @@ def create_notification(creator, to, notification_type, image=None,
 
 
 class ExploreCoaches(APIView):
+    """
+            search and find coaches on the site
+    """
 
     def get(self, request, fomrat=None):
         last_five = User.objects.filter(is_coach=True)
@@ -101,7 +107,9 @@ class ExploreCoaches(APIView):
 
 
 class ExplorePlayers(APIView):
-
+    """
+            search and find players on the site
+    """
     def get(self, request, fomrat=None):
         last_five = User.objects.filter(is_player=True)
 
@@ -110,6 +118,9 @@ class ExplorePlayers(APIView):
 
 
 class FollowUser(APIView):
+    """
+            follow users in the site, both players and coaches
+    """
     def post(self, request, user_id, format=None):
         user = request.user
 
@@ -127,6 +138,9 @@ class FollowUser(APIView):
 
 
 class UnFollowUser(APIView):
+    """
+            unfollow users
+    """
     def put(self, request, user_id, format=None):
         user = request.user
 
@@ -142,6 +156,9 @@ class UnFollowUser(APIView):
 
 
 class UserFollowers(APIView):
+    """
+            list and check user followers
+    """
     def get(self, request, first_name, format=None):
         try:
             found_user = users.models.User.objects.get(first_name=first_name)
@@ -160,6 +177,9 @@ class UserFollowers(APIView):
 
 
 class UserFollowing(APIView):
+    """
+            list and check user following
+    """
     def get(self, request, first_name, format=None):
         try:
             found_user = users.models.User.objects.get(first_name=first_name)
@@ -178,6 +198,9 @@ class UserFollowing(APIView):
 
 
 class Search(APIView):
+    """
+            search users by email
+    """
     def get(self, request, format=None):
         email = request.query_params.get('email', None)
         if email is not None:
