@@ -1,7 +1,7 @@
 import dj_database_url
 from decouple import config
 
-from asp.config.settings.base import *  # noqa
+from asp.config.settings.base import *
 
 JENKINS_TASKS = (
     'django_jenkins.tasks.run_pep8',
