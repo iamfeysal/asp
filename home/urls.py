@@ -1,5 +1,5 @@
-from django.urls import path, re_path, include
+from django.urls import path
 
 urlpatterns = [
     re_path('', ),
-    ]
+]
