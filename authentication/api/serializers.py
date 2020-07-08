@@ -5,15 +5,12 @@ from rest_framework.authtoken.models import Token
 from authentication.auth_backends import AuthenticationBackend
 from django.utils.translation import ugettext_lazy as _
 
-from users.models import User
 
-
-
-class LoginSerializer(serializers.Serializer) :
+class LoginSerializer(serializers.Serializer):
     """ Logs in existing users """
     email = serializers.EmailField(required=True, allow_blank=False)
     password = serializers.CharField(
-        style={'input_type' : 'password'}, required=True)
+        style={'input_type': 'password'}, required=True)
 
     def create(self, validated_data):
         pass
@@ -24,13 +21,12 @@ class LoginSerializer(serializers.Serializer) :
     def validate(self, attrs):
         email = attrs.get('email')
         password = attrs.get('password')
-        
 
         auth = AuthenticationBackend()
 
-        if email and password :
+        if email and password:
             user = auth.authenticate(email=email, password=password)
-        else :
+        else:
             msg = _('Must include "email" and "password".')
             raise exceptions.ValidationError(msg)
 
@@ -40,7 +36,7 @@ class LoginSerializer(serializers.Serializer) :
                 msg = _('User account is disabled.')
                 setattr(self, "account_inactive", True)
                 raise exceptions.ValidationError(msg)
-        else :
+        else:
             msg = _('Unable to log in with provided credentials.')
             setattr(self, "invalid_credentials", True)
             raise exceptions.ValidationError(msg)
@@ -49,13 +45,14 @@ class LoginSerializer(serializers.Serializer) :
         return attrs
 
 
-class TokenSerializer(serializers.ModelSerializer) :
+class TokenSerializer(serializers.ModelSerializer):
     """Token model serializer for fields: key"""
 
-    class Meta :
+    class Meta:
         model = Token
         fields = ('key',)
-        
+
+
 class ResetPasswordSerializer(serializers.Serializer):
     """
     Serializer for requesting a password reset
@@ -95,5 +92,3 @@ class ChangePasswordSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         pass
-        
-

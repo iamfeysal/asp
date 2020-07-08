@@ -4,21 +4,24 @@ repositories
 import uuid
 from datetime import timedelta
 from hashlib import sha512
+from random import random
 
 from django.utils import timezone
+
+from asp.config.settings.base import AUTH_USER_MODEL
 from authentication.models import PasswordResetRequest
 from users.models import User
 
 
-# def new_reset_request_for_user_with_phone_number(phone_number):
-#     user = AUTH_USER_MODEL.objects.get(phone=phone_number)
-#     token = random.randint(100000, 999999)
-#     generated_uuid = uuid.uuid4().hex
-#     return PasswordResetRequest.objects.create(
-#         uuid=generated_uuid,
-#         token=token,
-#         reset_user=user,
-#         expiry_date=timezone.now() + timedelta(hours=1))
+def new_reset_request_for_user_with_phone_number(phone_number):
+    user = AUTH_USER_MODEL.objects.get(phone=phone_number)
+    token = random.randint(100000, 999999)
+    generated_uuid = uuid.uuid4().hex
+    return PasswordResetRequest.objects.create(
+        uuid=generated_uuid,
+        token=token,
+        reset_user=user,
+        expiry_date=timezone.now() + timedelta(hours=1))
 
 
 def new_reset_request_for_user_with_email(email_address):

@@ -1,11 +1,10 @@
 import re
 from commands.messages import send_email
 from commands.repositories import new_reset_request_for_user_with_email
-# from asp.settings import AUTH_USER_MODEL
 from users.models import User
 
 
-def send_email_for_password_reset(request,email):
+def send_email_for_password_reset(request, email):
     """Takes care of user password ressetting"""
     # noinspection PyUnresolvedReferences
     try:
@@ -24,7 +23,7 @@ def send_email_for_password_reset(request,email):
         return False
 
     # build base url based on domain
-    
+
     base_url = request.build_absolute_uri()
 
     # send the email
