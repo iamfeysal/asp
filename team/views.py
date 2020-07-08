@@ -17,8 +17,10 @@ class TeamView(APIView):
 
     @staticmethod
     def post(request):
-        serializer = TeamSerializerCreate(validated_data=request.data, context={'request': request})
+        serializer = TeamSerializerCreate(validated_data=request.data,
+                                          context={'request': request})
         if serializer.is_valid():
             serializer.save()
-            return Response(TeamSerializer(serializer.instance).data, status=status.HTTP_201_CREATED)
+            return Response(TeamSerializer(serializer.instance).data,
+                            status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
