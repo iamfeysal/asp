@@ -7,7 +7,7 @@ beautifulsoup4==4.9.1
 certifi==2019.6.16
 cffi==1.12.3
 chardet==3.0.4
-codecov==2.0.15
+codecov==2.0.16
 coverage==4.5.4
 cryptography==2.7
 defusedxml==0.6.0
