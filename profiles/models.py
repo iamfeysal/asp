@@ -31,7 +31,7 @@ class UserProfile(models.Model):
     foot_choice = models.CharField(max_length=1, choices=PREFERED_PLAY_FOOT,
                                    null=True)
     nationality = CountryField()
-    gender = models.CharField(max_length=1,
+    gender = models.CharField(max_length=3,
                               choices=GENDER_CHOICES, null=True)
     current_status = models.CharField(max_length=255,
                                       help_text='free agent or playing for '
