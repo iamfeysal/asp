@@ -136,6 +136,7 @@ class MyUserAdmin(auth_admin.UserAdmin):
 
     actions = [
         'activate_users',
+        'delete_queryset'
     ]
 
     def activate_users(self, request, queryset):
@@ -148,8 +149,12 @@ class MyUserAdmin(auth_admin.UserAdmin):
         assert request.user.has_perm('auth.change_user')
         cnt = queryset.filter(is_active=False).update(is_active=True)
         self.message_user(request, 'Activated {} users.'.format(cnt))
+        activate_users.short_description = 'Activate Users'  # type: ignore
 
-    activate_users.short_description = 'Activate Users'  # type: ignore
+    def delete_queryset(self, request, queryset):
+        """Given a queryset, delete it from the database. bulk delete"""
+        deleted_users = queryset.delete()
+        self.message_user(request, 'Deleted {} users.'.format(deleted_users))
 
     def get_actions(self, request):
         actions = super().get_actions(request)
@@ -158,7 +163,7 @@ class MyUserAdmin(auth_admin.UserAdmin):
             hide activate_users() from users without change permission, 
             override get_actions()
             """
-            del actions['activate_users']
+            del actions['activate_users', 'delete_queryset']
         return actions
 
 
