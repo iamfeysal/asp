@@ -1,14 +1,12 @@
-from django.contrib import admin
-
 # Register your models here.
+from django.contrib import admin
 from django.contrib.auth import admin as auth_admin
 from django.utils.translation import gettext_lazy as _
 
 from authentication.forms import UserChangeForm, UserCreationForm
 from profiles.models import UserProfile
-from users.models import Skill, User, UserFeedback, Notification
 from team.models import Team, Player
-from django.contrib import admin
+from users.models import Skill, User, UserFeedback, Notification
 
 
 class SkillsInline(admin.StackedInline):
