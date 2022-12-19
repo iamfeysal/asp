@@ -1,5 +1,4 @@
 import dj_database_url
-from decouple import config
 
 from asp.config.settings.base import *
 
@@ -16,7 +15,6 @@ DATABASES = {
 }
 
 if config('MODE') == "dev":
-    DEBUG = config('DEBUG', default=True, cast=bool)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
