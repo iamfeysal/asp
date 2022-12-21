@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+
+{% block content %}
+<form method="post" action="{% url 'book_futsal' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Book">
+</form>
+{% load calendar %}
+
+{% calendar %}
+  {% for event in events %}
+    {% event event.start event.end event.name event.location %}
+  {% endfor %}
+{% endcalendar %}
+
+{% event_style event %}
+  background-color: #3b5998;
+  color: white;
+{% endevent_style %}
+
+{#<div id="calendar"></div>#}
+{% endblock content %}
+
+{#<script>#}
+{#    $(document).ready(function() {#}
+{#        $('#calendar').fullCalendar({#}
+{#            events: [#}
+{#                {% for booking in bookings %}#}
+{#                {#}
+{#                    title: '{{ booking.name }} - {{ booking.players }} players',#}
+{#                    start: '{{ booking.start_time|date:'Y-m-d H:i:s' }}',#}
+{#                }#}
+{#                {% endfor %}#}
+{#</script>#}

@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django_jenkins',
     'bootstrap4',
-    
     # my apps
     'authentication.apps.UsersConfig',
     'profiles.apps.ProfilesConfig',
@@ -47,7 +46,8 @@ INSTALLED_APPS = [
     'posts.apps.PostsConfig',
     'events.apps.EventsConfig',
     'team.apps.TeamConfig',
-    'requestgame.apps.RequestgameConfig'
+    'requestgame.apps.RequestgameConfig',
+    'pitchbooking.apps.PitchbookingConfig',
 
 ]
 PROJECT_APPS = (
