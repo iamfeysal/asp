@@ -33,6 +33,7 @@ class Pitch(models.Model):
 class Booking(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE, blank=True, null=True)
+    pitch = models.ForeignKey(Pitch, on_delete=models.CASCADE)
     date = models.DateField()
     time = models.TimeField()
     user_name = models.CharField(max_length=250)
