@@ -11,7 +11,7 @@ from django.template.defaultfilters import slugify
 
 # Create your models here.
 from django.db.models.signals import post_save, pre_save
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
