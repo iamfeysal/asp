@@ -36,16 +36,12 @@ class Booking(models.Model):
     pitch = models.ForeignKey(Pitch, on_delete=models.CASCADE)
     date = models.DateField()
     time = models.TimeField()
-    user_name = models.CharField(max_length=250)
-    user_email = models.EmailField()
     approved = models.BooleanField(default=False)
-    user_mobile = models.CharField(blank=True, null=True, max_length=10)
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
-        return self.user_name or "(No Name)"
+        return self.time or "(No Name)"
 
 
 class BookingSettings(models.Model):
