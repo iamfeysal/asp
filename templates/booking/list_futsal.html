@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+
+{% block content %}
+{% for pitch in pitches %}
+    <a href="{% url 'book_futsal' %}" class="pitch-link">{{ pitch.name }}</a>
+{% endfor %}
+{% endblock content %}
