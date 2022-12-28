@@ -1,17 +1,17 @@
-from django.shortcuts import render, redirect
 from .forms import BookingDateForm, BookingTimeForm, BookingSettingsForm
-from .models import Pitch, Booking, BookingSettings
-from django.conf import settings
-
 import datetime
 from typing import Dict, List
 
+from django.conf import settings
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.urls import reverse_lazy
 from django.views.generic import (DeleteView, ListView, TemplateView,
                                   UpdateView, View)
 from formtools.wizard.views import SessionWizardView
+
 from pitchbooking.utils import BookingSettingMixin
+from .forms import BookingDateForm, BookingTimeForm, BookingSettingsForm
+from .models import Booking, BookingSettings
 
 
 # def list_futsal_pitch(request):
