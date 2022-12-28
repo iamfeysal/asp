@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect
-from .forms import BookingDateForm, BookingTimeForm, BookingCustomerForm
+from .forms import BookingDateForm, BookingTimeForm, BookingSettingsForm
 from .models import Pitch, Booking, BookingSettings
 from django.conf import settings
-
 
 import datetime
 from typing import Dict, List
@@ -12,6 +11,8 @@ from django.urls import reverse_lazy
 from django.views.generic import (DeleteView, ListView, TemplateView,
                                   UpdateView, View)
 from formtools.wizard.views import SessionWizardView
+from pitchbooking.utils import BookingSettingMixin
+
 
 # def list_futsal_pitch(request):
 #     pitch = Pitch.objects.all()
@@ -33,7 +34,56 @@ from formtools.wizard.views import SessionWizardView
 #                   {'bookings': bookings, 'form': form})
 
 
+# # # # # # #
+# Admin Part
+# # # # # # #
+class BookingHomeView(BookingSettingMixin, TemplateView):
+    model = Booking
+    template_name = "booking/admin/dashboard.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["last_bookings"] = Booking.objects.filter().order_by(
+            "date", "time")[:10]
+        context["waiting_bookings"] = Booking.objects.filter(
+            approved=False).order_by("-date", "time")[:10]
+        return context
+
+
+class BookingListView(BookingSettingMixin, ListView):
+    model = Booking
+    template_name = "booking/admin/booking_list.html"
+    paginate_by = settings.PAGINATION
+
+
+class BookingSettingsView(BookingSettingMixin, UpdateView):
+    form_class = BookingSettingsForm
+    template_name = "booking/admin/booking_settings.html"
+
+    def get_object(self):
+        return BookingSettings.objects.filter().first()
+
+    def get_success_url(self):
+        return reverse("booking_settings")
+
+
+class BookingDeleteView(BookingSettingMixin, DeleteView):
+    mdoel = Booking
+    success_url = reverse_lazy('booking_list')
+    queryset = Booking.objects.filter()
+
+
+class BookingApproveView(BookingSettingMixin, View):
+    mdoel = Booking
+    success_url = reverse_lazy('booking_list')
+    fields = ("approved",)
+
+    def post(self, request, *args, **kwargs):
+        booking = get_object_or_404(Booking, pk=self.kwargs.get("pk"))
+        booking.approved = True
+        booking.save()
+
+        return redirect(self.success_url)
 
 
 # # # # # # # #
@@ -82,7 +132,8 @@ class BookingCreateWizardView(SessionWizardView):
 
     def done(self, form_list, **kwargs):
         data = dict((key, value) for form in form_list for key,
-                    value in form.cleaned_data.items())
+                                                           value in
+                    form.cleaned_data.items())
         booking = Booking.objects.create(**data)
 
         if settings.BOOKING_SUCCESS_REDIRECT_URL:
@@ -127,7 +178,7 @@ def get_available_time(date: datetime.date) -> List[Dict[datetime.time, bool]]:
         next_time = add_delta(next_time, datetime.timedelta(
             minutes=int(booking_settings.period_of_each_booking)))
         # print('next_time >>>>>>>>>>>>>>', next_time)
-        if next_time > booking_settings.end_time:
+        if next_time >= booking_settings.end_time:
             break
 
     return time_list
