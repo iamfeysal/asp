@@ -1,6 +1,7 @@
 from django.urls import path
 from pitchbooking.views import BookingCreateWizardView, BookingHomeView, \
-    BookingListView, BookingSettingsView,BookingDeleteView, BookingApproveView, get_available_time
+    BookingListView, BookingSettingsView,BookingDeleteView, BookingApproveView, \
+    get_available_time
 
 urlpatterns = [
     # path('', list_futsal_pitch, name='list_futsal'),
