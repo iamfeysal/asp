@@ -4,8 +4,6 @@ from pitchbooking.views import BookingCreateWizardView, BookingHomeView, \
     get_available_time
 
 urlpatterns = [
-    # path('', list_futsal_pitch, name='list_futsal'),
-
     path("", BookingCreateWizardView.as_view(), name="create_booking"),
     path("admins", BookingHomeView.as_view(), name="admin_dashboard"),
     path("admins/list", BookingListView.as_view(), name="booking_list"),
