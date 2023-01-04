@@ -1,5 +1,6 @@
 from django import forms
-from .models import Pitch, Booking, BookingSettings
+
+from .models import BookingSettings
 
 
 # class BookingForm(forms.ModelForm):
